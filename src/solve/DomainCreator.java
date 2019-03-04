@@ -173,18 +173,20 @@ public class DomainCreator {
 //		}
 //	    
 	    	
-		
-	    
-	    for (int i = 0; i < companiesNumber; i++) {
-			for (int j = 0; j < numVariables; j++) {
-				line.add(new Line(String.valueOf(vincoloValori3[i][j])+";"));
-			}
-			line.add(new Line(">=;"+minTables,0));
-
-			constraintsIO.appendContent(line);
+		if(minTables > 0) {
 			
-			line.clear();
+			for (int i = 0; i < companiesNumber; i++) {
+				for (int j = 0; j < numVariables; j++) {
+					line.add(new Line(String.valueOf(vincoloValori3[i][j])+";"));
+				}
+				line.add(new Line(">=;"+minTables,0));
+				
+				constraintsIO.appendContent(line);
+				
+				line.clear();
+			}
 		}
+	    
 		
 		/**
 	     * FINE BLOCCO VINCOLI 3
@@ -209,7 +211,8 @@ public class DomainCreator {
 											
 			   if(i != j) {
 					
-				   	int num = (int) (Math.random() * 100);
+				   	//int num = (int) (Math.random() * 100);
+				   	int num = 1;
 				   
 					line.add(new Line(num+";"));					
 				}else {

@@ -1,12 +1,15 @@
 package solve;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 
 import io.IOHandler;
 import io.Line;
-import lpsolve.*;
+import lpsolve.LpSolve;
+import lpsolve.LpSolveException;
 
 public class Solver {
 	
@@ -32,39 +35,90 @@ public class Solver {
 		
 	}
 	
-	public void loadConstraints() {
-				
-		try {			
-			
-			ArrayList<String[]> c = this.constraintsIO.readFile();
-			
-			if(c.size() > 1) {
-				
-				String[] domainData = c.remove(0);
-								
-				
-				if(domainData.length == 3) {
-					this.companiesNumber = Integer.parseInt(domainData[0]);
-					this.roundsNumber = Integer.parseInt(domainData[1]);
-					this.minIncontri = Integer.parseInt(domainData[2]);
-				}
-				
-				this.constraints = new ArrayList<Constraint>();
-				
-				for (String[] constraintLine: c) {
-					
-					this.constraints.add(new Constraint(constraintLine));
-					
-				}
-			}
-			
-			
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
+//	public void loadConstraints() {
+//				
+//		try {			
+//			
+//			ArrayList<String[]> c = this.constraintsIO.readFile();
+//			
+//			if(c.size() > 1) {
+//				
+//				String[] domainData = c.remove(0);
+//								
+//				
+//				if(domainData.length == 3) {
+//					this.companiesNumber = Integer.parseInt(domainData[0]);
+//					this.roundsNumber = Integer.parseInt(domainData[1]);
+//					this.minIncontri = Integer.parseInt(domainData[2]);
+//				}
+//				
+//				this.constraints = new ArrayList<Constraint>();
+//				
+//				for (String[] constraintLine: c) {
+//					
+//					this.constraints.add(new Constraint(constraintLine));
+//					
+//				}
+//			}
+//			
+//			
+//		} catch (Exception e) {
+//			
+//			e.printStackTrace();
+//		}
+//
+//		
+//	}
+	
+	public void loadConstraints(String filePath) {
 
-		
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ";";
+        ArrayList<String[]> ret = new ArrayList<String[]>();
+
+        this.constraints = new ArrayList<Constraint>();
+
+        try {
+        
+              br = new BufferedReader(new FileReader(filePath));
+              
+              Integer count = 0;
+            
+              while ((line = br.readLine()) != null) {
+
+                  String[] tokens = line.split(cvsSplitBy);    
+
+                  if (count == 0) {
+                      count++;
+                    this.companiesNumber = Integer.parseInt(tokens[0]);
+                    this.roundsNumber = Integer.parseInt(tokens[1]);
+                    this.minIncontri = Integer.parseInt(tokens[2]);
+                  }else {
+                	  
+                	  this.constraints.add(new Constraint(tokens));
+                  }
+
+                
+                  
+        
+              }
+        
+          } catch (FileNotFoundException e) {
+              e.printStackTrace();
+          } catch (IOException e) {
+              e.printStackTrace();
+          } finally {
+              if (br != null) {
+                  try {
+                      br.close();
+                      
+                  } catch (IOException e) {
+                      e.printStackTrace();
+                  }
+              }
+                        
+          }
 	}
 	
 	public void loadObjectiveCoefficient() {
@@ -88,7 +142,7 @@ public class Solver {
 		
 	}
 	
-	public void solve(){
+	public void solvePrint(){
 		
 		 ArrayList<Line> solution = new ArrayList<Line>();
 		 
@@ -158,7 +212,9 @@ public class Solver {
 			solv.setBinary(i, true);
 		  }
 
+		  //solv.setBreakAtFirst(true);
 		  
+		  solv.setAddRowmode(true);
 
 		  // solve the problem
 //		  System.out.println("IsOptimal: "+solv.solve());
@@ -179,7 +235,7 @@ public class Solver {
 		  
 		  double[] var = solv.getPtrVariables();
 		  for (int i = 0; i < var.length; i++) {
-			  solution.add(new Line("x[" + i+1 + "] = " + var[i],0));
+			  solution.add(new Line("x[" + i + "] = " + var[i],0));
 		  }
 		  
 //		  solution.add(new Line("",0));
@@ -199,6 +255,61 @@ public class Solver {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void solve() {
+		
+		 try {
+			 
+				int numSolution = (this.companiesNumber * (this.companiesNumber-1))/2 * this.roundsNumber;
+
+				LpSolve solv = LpSolve.makeLp(0, numSolution);
+				
+				//Dico che è un problema di massimo
+				
+				solv.setMaxim();
+				
+			   //setto la funzione obiettivo
+			   
+				solv.setAddRowmode(true);
+
+			   solv.strSetObjFn(this.calcObjFunNumbers());
+
+			 
+			  // add constraints
+			   
+
+			  
+			  for(Constraint c : this.constraints) {
+				  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
+
+			  }
+			  solv.setAddRowmode(false);
+			  
+			  //set binary variables
+			  
+			  for (int i = 1; i <= numSolution; i++) {
+				solv.setBinary(i, true);
+			  }
+
+			  //solv.setBreakAtFirst(true);
+			  
+			  // solve the problem
+
+			  solv.solve();
+			  
+			  this.objRes = solv.getObjective();
+			  
+			  // delete the problem and free memory
+			  solv.deleteLp();
+				  
+			  
+			  
+			} catch (LpSolveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 	}
 	
 	
