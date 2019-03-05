@@ -27,15 +27,6 @@ public class Solver {
 	private double timeElapsed;
 	private int solverResult;
 	
-
-//	public Solver(String constraintsFilePath, String objCoefficientsFilePath, String outputFilePath) {
-//		
-//		this.objIO = new IOHandler(objCoefficientsFilePath);
-//		this.constraintsIO = new IOHandler(constraintsFilePath);
-//		this.outputIO = new IOHandler(outputFilePath);
-//		
-//	}
-//	
 	
 	public Solver(int companiesNumber, int roundsNumber, int minIncontri,String objCoefficientsFilePath) {
 		
@@ -44,94 +35,6 @@ public class Solver {
 		this.roundsNumber = roundsNumber;
 		this.minIncontri = minIncontri;
 	}
-	
-	
-//	public void loadConstraints() {
-//				
-//		try {			
-//			
-//			ArrayList<String[]> c = this.constraintsIO.readFile();
-//			
-//			if(c.size() > 1) {
-//				
-//				String[] domainData = c.remove(0);
-//								
-//				
-//				if(domainData.length == 3) {
-//					this.companiesNumber = Integer.parseInt(domainData[0]);
-//					this.roundsNumber = Integer.parseInt(domainData[1]);
-//					this.minIncontri = Integer.parseInt(domainData[2]);
-//				}
-//				
-//				this.constraints = new ArrayList<Constraint>();
-//				
-//				for (String[] constraintLine: c) {
-//					
-//					this.constraints.add(new Constraint(constraintLine));
-//					
-//				}
-//			}
-//			
-//			
-//		} catch (Exception e) {
-//			
-//			e.printStackTrace();
-//		}
-//
-//		
-//	}
-	
-	public void loadConstraints(String filePath) {
-
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ";";
-        ArrayList<String[]> ret = new ArrayList<String[]>();
-
-        this.constraints = new ArrayList<Constraint>();
-
-        try {
-        
-              br = new BufferedReader(new FileReader(filePath));
-              
-              Integer count = 0;
-            
-              while ((line = br.readLine()) != null) {
-
-                  String[] tokens = line.split(cvsSplitBy);    
-
-                  if (count == 0) {
-                      count++;
-                    this.companiesNumber = Integer.parseInt(tokens[0]);
-                    this.roundsNumber = Integer.parseInt(tokens[1]);
-                    this.minIncontri = Integer.parseInt(tokens[2]);
-                  }else {
-                	  
-                	  this.constraints.add(new Constraint(tokens));
-                  }
-
-                
-                  
-        
-              }
-        
-          } catch (FileNotFoundException e) {
-              e.printStackTrace();
-          } catch (IOException e) {
-              e.printStackTrace();
-          } finally {
-              if (br != null) {
-                  try {
-                      br.close();
-                      
-                  } catch (IOException e) {
-                      e.printStackTrace();
-                  }
-              }
-                        
-          }
-	}
-	
 	
 
 
@@ -157,7 +60,7 @@ public class Solver {
 	}
 	
 
-	public void solve() {
+	public double[] solve() {
 		
 		 try {
 			 
@@ -186,16 +89,13 @@ public class Solver {
 			        for (int t = 1; t <= this.roundsNumber ; t++)
 			        {
 			        	ArrayList<Integer> c = new ArrayList<Integer>();
-//			            curr = [];
+
 			    
 			            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
 			            {
 			            	int absVar = this.absoluteVar(i, j1, t);
 			            	c.add(absVar);
-	
-			            	//line.add(new Line("x"+String.valueOf(absVar)+ " + "));
-			            	
-			            	//curr.push(index_handler(i,j1,t));
+
 			            }
 			    
 			            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
@@ -203,7 +103,6 @@ public class Solver {
 			            	int absVar = this.absoluteVar(j2, i, t);
 			            	c.add(absVar);
 			            	
-			            	//line.add(new Line("x"+String.valueOf(absVar)+ " + "));
 			            }
 			            
 			            int[] colno = new int[c.size()];
@@ -213,15 +112,10 @@ public class Solver {
 			            	colno[j] = c.get(j);
 			            	sparserow[j] = 1.0;
 						}
-			            System.out.println(Arrays.toString(colno));
+
 			            
 			            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.EQ,1.0);
-			            
-//			            String out = String.join(" + ", c);
-//			            
-//			            out = out + " = " + "1";
-			            
-			            
+
 			           
 			          
 			        }
@@ -231,12 +125,6 @@ public class Solver {
 			    * BLOCCO VINCOLI 2
 			    */
 			   
-//			   for (int i = 0; i < this.companiesNumber; i++) {
-//				   for (int j = 0; j < this.roundsNumber; j++) {
-//					   ArrayList<Integer> c = new ArrayList<Integer>();
-//					   c.add(e)
-//				   }
-//			   }
 			   
 				for (int i = 1; i <= companiesNumber*(companiesNumber-1)/2; i++) {
 					//scrivo la riga			
@@ -245,14 +133,12 @@ public class Solver {
 					
 					ArrayList<Integer> c = new ArrayList<Integer>();
 					
-					for (int j = 1; j <= companiesNumber*(companiesNumber-1)/2*roundsNumber; j++) {
+					for (int j = 1; j <= roundsNumber; j++) {
 						
-						if(j == k) {
-																		
-							c.add(k);
-							k += companiesNumber*(companiesNumber-1)/2;
-							
-						}
+						
+						c.add(k);
+						k += companiesNumber*(companiesNumber-1)/2;
+
 						
 					}
 					
@@ -263,8 +149,7 @@ public class Solver {
 		            	colno[j] = c.get(j);
 		            	sparserow[j] = 1.0;
 					}
-		            
-		            System.out.println(Arrays.toString(colno));
+//		            System.out.println(Arrays.toString(colno));		       
 		            
 		            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.LE,1.0);
 					
@@ -272,10 +157,6 @@ public class Solver {
 			     
 			   
 			  
-//			  for(Constraint c : this.constraints) {
-//				  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
-//
-//			  }
 			  solv.setAddRowmode(false);
 			  
 			  //set binary variables
@@ -292,6 +173,7 @@ public class Solver {
 			  
 			  System.out.println(solv.getObjective());
 			  double[] var = solv.getPtrVariables();
+			  
 			  for (int i = 0; i < var.length; i++) {
 				  int j = i+1;
 				  System.out.println(("x[" + j + "] = " + var[i]));
@@ -303,13 +185,15 @@ public class Solver {
 			  // delete the problem and free memory
 			  solv.deleteLp();
 				  
-			  
+			  return var;
 			  
 			} catch (LpSolveException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		return null;
 		
+		 
 	}
 	
 	

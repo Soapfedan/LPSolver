@@ -14,25 +14,25 @@ public class DomainCreator {
 	private IOHandler constraintsIO;
 	private IOHandler outputIO;
 	
-	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, IOHandler constraintsIO, IOHandler outputIO) {
+	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, IOHandler outputIO) {
 		this.companiesNumber = companiesNumber;
 		this.roundsNumber = roundsNumber;
 		this.minTables = minTables;
-		this.constraintsIO = constraintsIO;
+		//this.constraintsIO = constraintsIO;
 		this.outputIO = outputIO;
 		
 		
 		this.numVariables = this.companiesNumber * (this.companiesNumber-1)/2 * this.roundsNumber;
 		
-		ArrayList<Line> domainData = new ArrayList<Line>();
-		
-		domainData.add(new Line(String.valueOf(companiesNumber+";")));
-		domainData.add(new Line(String.valueOf(roundsNumber+";")));
-		domainData.add(new Line(String.valueOf(minTables)));
-		domainData.add(new Line("",0));
-		
-		
-		this.constraintsIO.writeContent(domainData);
+//		ArrayList<Line> domainData = new ArrayList<Line>();
+//		
+//		domainData.add(new Line(String.valueOf(companiesNumber+";")));
+//		domainData.add(new Line(String.valueOf(roundsNumber+";")));
+//		domainData.add(new Line(String.valueOf(minTables)));
+//		domainData.add(new Line("",0));
+//		
+//		
+//		this.constraintsIO.writeContent(domainData);
 		
 		
 	}
