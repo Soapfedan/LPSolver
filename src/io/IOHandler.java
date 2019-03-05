@@ -19,8 +19,9 @@ public class IOHandler {
 	
 	
 	public IOHandler(String filepath) {
-		
+				
 		this.filePath = filepath;		
+		File file = new File(this.filePath);
 		
 	}
 	

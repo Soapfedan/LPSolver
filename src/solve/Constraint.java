@@ -7,10 +7,13 @@ import lpsolve.*;
 public class Constraint {
 	
 	private String coefficients;
+	private String[] coeffs;
 	private int compareSign;
 	private int constTerm;
 	
 	public Constraint(String[] line) {
+		
+		this.coeffs = line;
 		
 		this.coefficients = "";
 		String l = "";
@@ -82,6 +85,8 @@ public class Constraint {
 	public String toString() {
 		return this.coefficients + this.compareSign + " " + this.constTerm;		
 	}
+	
+	
 	
 	
 
