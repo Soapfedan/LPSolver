@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import io.IOHandler;
 import io.Line;
@@ -27,13 +28,23 @@ public class Solver {
 	private int solverResult;
 	
 
-	public Solver(String constraintsFilePath, String objCoefficientsFilePath, String outputFilePath) {
+//	public Solver(String constraintsFilePath, String objCoefficientsFilePath, String outputFilePath) {
+//		
+//		this.objIO = new IOHandler(objCoefficientsFilePath);
+//		this.constraintsIO = new IOHandler(constraintsFilePath);
+//		this.outputIO = new IOHandler(outputFilePath);
+//		
+//	}
+//	
+	
+	public Solver(int companiesNumber, int roundsNumber, int minIncontri,String objCoefficientsFilePath) {
 		
 		this.objIO = new IOHandler(objCoefficientsFilePath);
-		this.constraintsIO = new IOHandler(constraintsFilePath);
-		this.outputIO = new IOHandler(outputFilePath);
-		
+		this.companiesNumber = companiesNumber;
+		this.roundsNumber = roundsNumber;
+		this.minIncontri = minIncontri;
 	}
+	
 	
 //	public void loadConstraints() {
 //				
@@ -121,6 +132,9 @@ public class Solver {
           }
 	}
 	
+	
+
+
 	public void loadObjectiveCoefficient() {
 		
 		ArrayList<String[]> objs = this.objIO.readFile();
@@ -142,121 +156,7 @@ public class Solver {
 		
 	}
 	
-	public void solvePrint(){
-		
-		 ArrayList<Line> solution = new ArrayList<Line>();
-		 
-		 solution.add(new Line(""));
-		 
-		 this.outputIO.writeContent(solution);
-		
-		 try {
-			 
-			int numSolution = (this.companiesNumber * (this.companiesNumber-1))/2 * this.roundsNumber;
-			//System.out.println(numSolution);
-			LpSolve solv = LpSolve.makeLp(0, numSolution);
-			
-			//Dico che è un problema di massimo
-			
-			solv.setMaxim();
-			
-			//Mostro i dati del dominio applicativo
-			 
-//			 solution.add(new Line("Dati Dominio",0));
-//			 solution.add(new Line("",0));
-//			 solution.add(new Line("N.Imprese = "+this.companiesNumber,0));
-//			 solution.add(new Line("N.Round = "+this.roundsNumber,0));
-//			 solution.add(new Line("N.Variabili = "+numSolution,0));
-			 
-//			 solution.add(new Line("",0));
-//			 solution.add(new Line("",0));
-			 
-			 // set objective function
-//			 solution.add(new Line("Matrice di preferenza:",0));
-//			 
-//			 for (int i = 0; i < this.objCoefficient.length; i++) {	
-//				 
-//				 solution.add(new Line("[",2));
-//					
-//					for (int j = 0; j < this.objCoefficient.length; j++) {
-//						
-//						solution.add(new Line(String.valueOf(this.objCoefficient[i][j]),2));
-//					}
-//					
-//				  solution.add(new Line("]",0));
-//			}
-//		  
-//		   solution.add(new Line("",0));
-//		   solution.add(new Line("Funzione Obiettivo: ",0));
-//		   solution.add(new Line("[" + this.calcObjFunNumbers() + "]",0));			   
 
-		   //setto la funzione obiettivo
-		   
-		   //System.out.println(this.calcObjFunNumbers());
-		   solv.strSetObjFn(this.calcObjFunNumbers());
-		   			   
-//		   solution.add(new Line("",0));
-		 
-		  // add constraints
-		   
-		  solution.add(new Line("Vincoli:",0));
-		  
-		  for(Constraint c : this.constraints) {
-			  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
-//			  solution.add(new Line("[ "+c.getCoefficients()+" "+ Constraint.getSign(c.getCompareSign())+" "+c.getConstTerm()+" ]",0));
-		  }
-		  
-		  //set binary variables
-		  
-		  for (int i = 1; i <= numSolution; i++) {
-			solv.setBinary(i, true);
-		  }
-
-		  //solv.setBreakAtFirst(true);
-		  
-		  solv.setAddRowmode(true);
-
-		  // solve the problem
-//		  System.out.println("IsOptimal: "+solv.solve());
-		  this.solverResult = solv.solve();
-		  
-		  
-		  // print solution 
-//		  solution.add(new Line("",0));
-//		  solution.add(new Line("",0));
-		  
-//		  solution.add(new Line("Risultato Funzione obiettivo:",2));
-		  
-		  this.objRes = solv.getObjective();
-		  
-//		  solution.add(new Line(String.valueOf(solv.getObjective()),0));
-		  
-//		  solution.add(new Line("",0));
-		  
-		  double[] var = solv.getPtrVariables();
-		  for (int i = 0; i < var.length; i++) {
-			  solution.add(new Line("x[" + i + "] = " + var[i],0));
-		  }
-		  
-//		  solution.add(new Line("",0));
-//		  
-//		  solution.add(new Line("Tempo impiegato: "));
-//		  solution.add(new Line(String.valueOf(solv.timeElapsed()),0));
-		  
-		  this.timeElapsed = solv.timeElapsed();
-		  
-
-		  // delete the problem and free memory
-		  solv.deleteLp();
-			  
-		  this.outputIO.appendContent(solution);
-		  
-		} catch (LpSolveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void solve() {
 		
 		 try {
@@ -278,12 +178,104 @@ public class Solver {
 			 
 			  // add constraints
 			   
-
+				/**
+				 * BLOCCO VINCOLO 1
+				 */
+			   for (int i = 1; i <= this.companiesNumber; i++)
+			    {
+			        for (int t = 1; t <= this.roundsNumber ; t++)
+			        {
+			        	ArrayList<Integer> c = new ArrayList<Integer>();
+//			            curr = [];
+			    
+			            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
+			            {
+			            	int absVar = this.absoluteVar(i, j1, t);
+			            	c.add(absVar);
+	
+			            	//line.add(new Line("x"+String.valueOf(absVar)+ " + "));
+			            	
+			            	//curr.push(index_handler(i,j1,t));
+			            }
+			    
+			            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
+			            {
+			            	int absVar = this.absoluteVar(j2, i, t);
+			            	c.add(absVar);
+			            	
+			            	//line.add(new Line("x"+String.valueOf(absVar)+ " + "));
+			            }
+			            
+			            int[] colno = new int[c.size()];
+			            double[] sparserow = new double[c.size()];
+			            
+			            for (int j = 0; j < c.size(); j++) {
+			            	colno[j] = c.get(j);
+			            	sparserow[j] = 1.0;
+						}
+			            System.out.println(Arrays.toString(colno));
+			            
+			            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.EQ,1.0);
+			            
+//			            String out = String.join(" + ", c);
+//			            
+//			            out = out + " = " + "1";
+			            
+			            
+			           
+			          
+			        }
+			    }
+			   
+			   /**
+			    * BLOCCO VINCOLI 2
+			    */
+			   
+//			   for (int i = 0; i < this.companiesNumber; i++) {
+//				   for (int j = 0; j < this.roundsNumber; j++) {
+//					   ArrayList<Integer> c = new ArrayList<Integer>();
+//					   c.add(e)
+//				   }
+//			   }
+			   
+				for (int i = 1; i <= companiesNumber*(companiesNumber-1)/2; i++) {
+					//scrivo la riga			
+					
+					int k=i;
+					
+					ArrayList<Integer> c = new ArrayList<Integer>();
+					
+					for (int j = 1; j <= companiesNumber*(companiesNumber-1)/2*roundsNumber; j++) {
+						
+						if(j == k) {
+																		
+							c.add(k);
+							k += companiesNumber*(companiesNumber-1)/2;
+							
+						}
+						
+					}
+					
+		            int[] colno = new int[c.size()];
+		            double[] sparserow = new double[c.size()];
+		            
+		            for (int j = 0; j < c.size(); j++) {
+		            	colno[j] = c.get(j);
+		            	sparserow[j] = 1.0;
+					}
+		            
+		            System.out.println(Arrays.toString(colno));
+		            
+		            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.LE,1.0);
+					
+				}
+			     
+			   
 			  
-			  for(Constraint c : this.constraints) {
-				  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
-
-			  }
+//			  for(Constraint c : this.constraints) {
+//				  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
+//
+//			  }
 			  solv.setAddRowmode(false);
 			  
 			  //set binary variables
@@ -298,7 +290,15 @@ public class Solver {
 
 			  solv.solve();
 			  
-			  this.objRes = solv.getObjective();
+			  System.out.println(solv.getObjective());
+			  double[] var = solv.getPtrVariables();
+			  for (int i = 0; i < var.length; i++) {
+				  int j = i+1;
+				  System.out.println(("x[" + j + "] = " + var[i]));
+			  }
+			  
+			  
+		
 			  
 			  // delete the problem and free memory
 			  solv.deleteLp();
@@ -317,11 +317,11 @@ public class Solver {
 		
 		String ret = "";
 		
-		for (int i = 0; i < objCoefficient.length; i++) {
+		for (int i = 0; i < companiesNumber; i++) {
 					
-			for (int j = 0; j < objCoefficient.length; j++) {
+			for (int j = 0; j < companiesNumber; j++) {
 				if(i>j) {
-					int sum = this.objCoefficient[i][j]*2;
+					int sum = this.objCoefficient[i][j]*this.objCoefficient[j][i];
 					
 					ret += sum + " ";
 				}
@@ -363,6 +363,130 @@ public class Solver {
 
 	public int getSolverResult() {
 		return solverResult;
+	}
+	
+	
+	
+	public void solvePrint(){
+		
+		 ArrayList<Line> solution = new ArrayList<Line>();
+		 
+		 solution.add(new Line(""));
+		 
+		 this.outputIO.writeContent(solution);
+		
+		 try {
+			 
+			int numSolution = (this.companiesNumber * (this.companiesNumber-1))/2 * this.roundsNumber;
+			//System.out.println(numSolution);
+			LpSolve solv = LpSolve.makeLp(0, numSolution);
+			
+			//Dico che è un problema di massimo
+			
+			solv.setMaxim();
+			
+			//Mostro i dati del dominio applicativo
+			 
+			 solution.add(new Line("Dati Dominio",0));
+			 solution.add(new Line("",0));
+			 solution.add(new Line("N.Imprese = "+this.companiesNumber,0));
+			 solution.add(new Line("N.Round = "+this.roundsNumber,0));
+			 solution.add(new Line("N.Variabili = "+numSolution,0));
+			 
+			 solution.add(new Line("",0));
+			 solution.add(new Line("",0));
+			 
+			 // set objective function
+			 solution.add(new Line("Matrice di preferenza:",0));
+			 
+			 for (int i = 0; i < this.objCoefficient.length; i++) {	
+				 
+				 solution.add(new Line("[",2));
+					
+					for (int j = 0; j < this.objCoefficient.length; j++) {
+						
+						solution.add(new Line(String.valueOf(this.objCoefficient[i][j]),2));
+					}
+					
+				  solution.add(new Line("]",0));
+			}
+		  
+		   solution.add(new Line("",0));
+		   solution.add(new Line("Funzione Obiettivo: ",0));
+		   solution.add(new Line("[" + this.calcObjFunNumbers() + "]",0));			   
+
+		   //setto la funzione obiettivo
+		   
+		   solv.setAddRowmode(true);
+		   
+		   //System.out.println(this.calcObjFunNumbers());
+		   solv.strSetObjFn(this.calcObjFunNumbers());
+		   			   
+		   solution.add(new Line("",0));
+		 
+		  // add constraints
+		   
+		  solution.add(new Line("Vincoli:",0));
+		  
+		  for(Constraint c : this.constraints) {
+			  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
+			  solution.add(new Line("[ "+c.getCoefficients()+" "+ Constraint.getSign(c.getCompareSign())+" "+c.getConstTerm()+" ]",0));
+		  }
+		  
+		  //set binary variables
+		  
+		  for (int i = 1; i <= numSolution; i++) {
+			solv.setBinary(i, true);
+		  }
+
+		  //solv.setBreakAtFirst(true);
+		  
+		  solv.setAddRowmode(false);
+
+		  // solve the problem
+		  System.out.println("IsOptimal: "+solv.solve());
+		  this.solverResult = solv.solve();
+		  
+		  
+		  // print solution 
+		  solution.add(new Line("",0));
+		  solution.add(new Line("",0));
+		  
+		  solution.add(new Line("Risultato Funzione obiettivo:",2));
+		  
+		  this.objRes = solv.getObjective();
+		  
+		  solution.add(new Line(String.valueOf(solv.getObjective()),0));
+		  
+		  solution.add(new Line("",0));
+		  
+		  double[] var = solv.getPtrVariables();
+		  for (int i = 0; i < var.length; i++) {
+			  solution.add(new Line("x[" + i + "] = " + var[i],0));
+		  }
+		  
+		  solution.add(new Line("",0));
+		  
+		  solution.add(new Line("Tempo impiegato: "));
+		  solution.add(new Line(String.valueOf(solv.timeElapsed()),0));
+		  
+		  this.timeElapsed = solv.timeElapsed();
+		  
+
+		  // delete the problem and free memory
+		  solv.deleteLp();
+			  
+		  this.outputIO.appendContent(solution);
+		  
+		} catch (LpSolveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private int absoluteVar(int i, int j,int t) {
+		return ( (((i-1)*(i-1)+(i-1)) / 2) - (i-1-j) + ((this.companiesNumber*this.companiesNumber-this.companiesNumber) / 2) * (t-1) );
 	}
 	
 	

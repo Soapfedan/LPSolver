@@ -199,7 +199,7 @@ public class DomainCreator {
 	public void writeObj() {
 		
 		
-		
+		int count = 0;
 		 ArrayList<Line> line = new ArrayList<Line>();
 		 
 		 outputIO.writeContent(line);
@@ -212,7 +212,14 @@ public class DomainCreator {
 			   if(i != j) {
 					
 				   	//int num = (int) (Math.random() * 100);
-				   	int num = 1;
+				   int num;
+				   if(count < 4 && i>j) {
+					   num = 1;
+					   count++;
+				   }else {
+					   num = 1;
+				   }
+				   
 				   
 					line.add(new Line(num+";"));					
 				}else {

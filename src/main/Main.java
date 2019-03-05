@@ -7,19 +7,62 @@ import java.util.Arrays;
 
 import io.IOHandler;
 import io.Line;
+import lpsolve.LpSolve;
+import lpsolve.LpSolveException;
 import solve.Constraint;
+import solve.Creator;
 import solve.DomainCreator;
 import solve.Solver;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws LpSolveException {
 		
 		//System.out.println(Arrays.toString(args));
-		solve(50,8,0);
+		solve(4,2,0);
+//		create(4,2,0);
+		
+		//test(131312,1231232);
 		
 		
 	}
+	
+	
+	public static void test(int n, int t) throws LpSolveException {
+		
+		//LpSolve s = new LpSolve(0);
+		
+		int numVar = (n * (n-1))/2 * t;
+
+		LpSolve solv = LpSolve.makeLp(4, 4);
+		
+		
+		solv.readLp("resources/modello.lp", LpSolve.NORMAL, "test model");
+		
+		//Arrays.toString(solv.getConstraints());
+		
+		solv.solve();
+		
+		System.out.println(solv.getObjective());
+		
+		 double[] var = new double[4];
+		 solv.getVariables(var);
+		 for (int i = 0; i < var.length; i++) {
+			 int j = i+1;
+			  System.out.println("x[" + j + "] = " + var[i]);
+		  }
+		 System.out.println(Arrays.toString(var));
+	}
+	
+	public static void create(int N, int T, int L) {
+		
+		
+		Creator c = new Creator(N,T,L,"resources/"+N+"/"+L+"/modello.lp");
+		c.createConstraint();
+		
+	}
+	
+	
 
 	
 	public static void solve(int N, int T, int L) {
@@ -58,7 +101,7 @@ public class Main {
 		/**
 		 * Scrittura dei vincoli
 		 */
-		cc.writeConstraintList();
+		//cc.writeConstraintList();
 		
 		finish = Instant.now().toEpochMilli();
 		 
@@ -112,9 +155,7 @@ public class Main {
 	    
 		start = Instant.now().toEpochMilli();
 		
-		testSolver = new Solver("resources/"+N+"/"+L+"/vincoli.csv",
-				"resources/"+N+"/"+L+"/preferenze.csv",
-				"resources/"+N+"/"+L+"/output.txt");
+		testSolver = new Solver(N,T,L,"resources/"+N+"/"+L+"/preferenze.csv");
 		
 		line.add(new Line("",0));
 		line.add(new Line("Inizio Caricamento Vincoli",0));
@@ -123,7 +164,7 @@ public class Main {
 		/**
 		 * Caricamento dei vincoli dal file CSV
 		 */
-		testSolver.loadConstraints("resources/"+N+"/"+L+"/vincoli.csv");
+		//testSolver.loadConstraints("resources/"+N+"/"+L+"/vincoli.csv");
 		
 	   
 		 
@@ -205,7 +246,7 @@ public class Main {
 	     * Fine risoluzione del problema
 	     */
 		
-		results.appendContent(line);
+		results.writeContent(line);
 		
 		line.clear();
 		
