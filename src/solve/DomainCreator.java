@@ -1,9 +1,8 @@
 package solve;
 
 import java.util.ArrayList;
-
 import io.IOHandler;
-import io.Line;
+
 
 public class DomainCreator {
 
@@ -32,29 +31,21 @@ public class DomainCreator {
 		
 		
 		int count = 0;
-		 ArrayList<Line> line = new ArrayList<Line>();
+		 ArrayList<String> line = new ArrayList<String>();
 		 
 		 outputIO.writeContent(line);
 		
-		for (int i = 1; i <= companiesNumber; i++) {
-			//scrivo la riga											
+		for (int i = 1; i <= companiesNumber; i++) {										
 
 			for (int j = 1; j <= companiesNumber; j++) {
 											
 			   String l = "";
 			   if(count < N_PREFERENZE && i>j) {
 				   int el = j;
-//				   if(i % 2 == 0) {
-//					   
-//					   el = j + this.companiesNumber/N_PREFERENZE*count;
-//					   if(i <= el) {
-//						   el = j;
-//					   }
-//				   }
 				   
-				   l = i+"_"+el+":"+20;
+				   l = i+","+el+","+10;
 				   count++;
-				   line.add(new Line(l,0));					
+				   line.add(l+"\n");					
 			   }
 
 		

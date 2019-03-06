@@ -60,84 +60,18 @@ public class IOHandler {
 		  }
 		  return ret;
 	}
+
 	
 	
-	public ArrayList<String[]> readFile(boolean debug,String signSplitBy){
+	public void appendContent(ArrayList<String> content) {
 		
-		  BufferedReader br = null;
-		  String line = "";
-		  ArrayList<String[]> ret = new ArrayList<String[]>();
-		
-		  try {
-		
-		      br = new BufferedReader(new FileReader(this.filePath));
-		      while ((line = br.readLine()) != null) {
-		
-		          // use comma as separator
-		          String[] tokens = line.split(signSplitBy);
-		          
-		          if(debug) {
-		        	  for (int i = 0; i < tokens.length; i++) {
-			        	  System.out.print(tokens[i]+" ");
-			          }
-		        	  System.out.println("");
-		          }
-		          
-		          
-		          ret.add(tokens);
-		
-		      }
-		
-		  } catch (FileNotFoundException e) {
-		      e.printStackTrace();
-		  } catch (IOException e) {
-		      e.printStackTrace();
-		  } finally {
-		      if (br != null) {
-		          try {
-		              br.close();
-		              
-		          } catch (IOException e) {
-		              e.printStackTrace();
-		          }
-		      }
-		                
-		  }
-		  return ret;
-	}
-	
-//	public ArrayList<ArrayList<Integer>> readIntegerFile() {
-//			
-//	  ArrayList<ArrayList<Integer>> a = new ArrayList<ArrayList<Integer>>();
-//	  Scanner input;
-//	  int i = 0;
-//		input = new Scanner(this.filePath);
-//		 while(input.hasNextLine())
-//		  {
-//		      Scanner colReader = new Scanner(input.nextLine());
-//		      ArrayList col = new ArrayList();
-//		      while(colReader.hasNextInt())
-//		      {
-//		    	  Integer number = colReader.nextInt();
-//		    	  //System.out.println(number);
-//		          col.add(number);
-//		      }
-//		      a.add(col);
-//		      
-//		  }
-//		 
-//		 return a;
-//			 
-//    }
-	  	
-	
-	public void appendContent(ArrayList<Line> content) {
-		
-		LinesWriter wr;
+		FileWriter wr;
 		
 		try {
-			wr = new LinesWriter(this.filePath,true);
-			wr.write(content);
+			wr = new FileWriter(this.filePath,true);
+			for (String l: content) {
+				wr.write(l);
+			}
 			wr.close();
 			
 		} catch (IOException e) {
@@ -149,13 +83,15 @@ public class IOHandler {
 	}
 	
 	
-	public void writeContent(ArrayList<Line> content) {
+	public void writeContent(ArrayList<String> content) {
 		
-		LinesWriter wr;
+		FileWriter wr;
 		
 		try {
-			wr = new LinesWriter(this.filePath,false);
-			wr.write(content);
+			wr = new FileWriter(this.filePath,false);
+			for (String l: content) {
+				wr.write(l);
+			}
 			wr.close();
 			
 		} catch (IOException e) {

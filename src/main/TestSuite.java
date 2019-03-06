@@ -12,13 +12,13 @@ public class TestSuite {
 	private int companiesNumber;
 	private int roundsNumber;
 
-	private int minTables;
+	private int minIncontri;
 	
 	public TestSuite(int companiesNumber, int roundsNumber, int minTables) {
 		
 		this.companiesNumber = companiesNumber;
 		this.roundsNumber = roundsNumber;
-		this.minTables = minTables;
+		this.minIncontri = minTables;
 
 	}
 	
@@ -140,6 +140,73 @@ public class TestSuite {
 		}else {
 			System.out.println(" Test Vincolo 2 - ERROR");
 		}
+		
+		return ret;
+	}
+	
+	
+	public boolean checkMinIncontri(double[] variables) {
+		
+		boolean ret = true;
+		
+		System.out.println("---------------- Inizio Test Vincolo 2 --------------------");
+		
+		for (int i = 1; i <= this.companiesNumber; i++)
+	    {
+
+			
+			int nIncontri = 0;
+			
+	        for (int t = 1; t <= this.roundsNumber ; t++)
+	        {
+
+	    
+	            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
+	            {
+	            	int absVar = Utils.getAbsoluteVar(i, j1, t,this.companiesNumber);
+	            	
+	            	if(variables[absVar-1] == 1.0) {
+	            		nIncontri += 1;
+
+	            	}
+	            	
+
+	            }
+	    
+	            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
+	            {
+	            	int absVar = Utils.getAbsoluteVar(j2, i, t,this.companiesNumber);
+	            	
+	            	if(variables[absVar-1] == 1.0) {
+	            		nIncontri += 1;
+
+	            	}
+	            	
+	            	
+	            }	             
+	          
+	        }
+	        
+	        int[] i_j_t = new int[3];
+            i_j_t = Utils.getOriginalThreeIndexes(i,this.companiesNumber,this.roundsNumber);
+	        
+	        
+	        if(nIncontri < this.minIncontri) {
+	        	ret = false;
+	        	System.out.println("Errore: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri ha meno di "+this.minIncontri+" incontri.");
+	        }
+
+	       
+	    }
+		
+		if(ret) {
+			System.out.println(" Test Vincolo 3 - OK");
+		}else {
+			System.out.println(" Test Vincolo 3 - ERROR");
+		}
+		
+		
+		
 		
 		return ret;
 	}

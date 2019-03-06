@@ -6,9 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import io.IOHandler;
-import io.Line;
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
 import main.Utils;
@@ -19,7 +17,6 @@ public class Solver {
 	private IOHandler objIO;
 	private IOHandler constraintsIO;
 	private IOHandler outputIO;
-	private ArrayList<Constraint> constraints;
 	private int[][] objCoefficient;
 	private int companiesNumber;
 	private int roundsNumber;
@@ -57,12 +54,8 @@ public class Solver {
 		
 		
 		if(this.companiesNumber > 1) {
-		
-			
-		//Devo inizializzare tutta la matrice con tutti 1 tranne che sulla diagonale
-		this.initializePrefsMatr();
-		
-		
+					
+		this.initializePrefsMatr();				
 		
 		ArrayList<String[]> objs = this.objIO.readFile(" ");
 			
@@ -72,18 +65,13 @@ public class Solver {
 				
 				for (int j = 0; j < line.length; j++) {
 					
-					String[] a1 = new String[2];
-					String[] a2 = new String[2];
+					String[] parameters = new String[3];
 					
-					//Con a1 estraggo la coppia degli indici e il valore di preferenza es: 4_2:10 => ["4_2","10"]
-					a1 = line[j].split(":");
-
-					//Con a2 estraggo i due indici es: 4_2 => ["4","2"]
-					a2 = a1[0].split("_");
+					parameters = line[j].split(",");
 					
-					int iIndex = Integer.parseInt(a2[0]);
-					int jIndex = Integer.parseInt(a2[1]);
-					int pref = Integer.parseInt(a1[1]);
+					int iIndex = Integer.parseInt(parameters[0]);
+					int jIndex = Integer.parseInt(parameters[1]);
+					int pref = Integer.parseInt(parameters[2]);
 					
 					this.objCoefficient[iIndex-1][jIndex-1] = pref;
 					
@@ -110,22 +98,14 @@ public class Solver {
 
 				LpSolve solv = LpSolve.makeLp(0, numSolution);
 				
-				//Dico che è un problema di massimo
-				
-				solv.setMaxim();
-				
-			   //setto la funzione obiettivo
+				solv.setMaxim();				
 			   
 				solv.setAddRowmode(true);
 				
-				//Carico i coefficienti in memoria
 				this.loadObjectiveCoefficient();
 
-				//Mi estraggo tutti i parametri
 			   solv.strSetObjFn(this.calcObjFunNumbers());
 
-			 
-			  // add constraints
 			   
 				/**
 				 * BLOCCO VINCOLO 1
@@ -172,8 +152,7 @@ public class Solver {
 			    */
 			   
 			   
-				for (int i = 1; i <= companiesNumber*(companiesNumber-1)/2; i++) {
-					//scrivo la riga			
+				for (int i = 1; i <= companiesNumber*(companiesNumber-1)/2; i++) {	
 					
 					int k=i;
 					
@@ -194,26 +173,62 @@ public class Solver {
 		            for (int j = 0; j < c.size(); j++) {
 		            	colno[j] = c.get(j);
 		            	sparserow[j] = 1.0;
-					}
-//		            System.out.println(Arrays.toString(colno));		       
+					}	       
 		            
 		            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.LE,1.0);
 					
 				}
+				
+				/**
+				 * BLOCCO VINCOLI 3
+				 */
 			     
+				for (int i = 1; i <= this.companiesNumber; i++)
+			    {
+					ArrayList<Integer> c = new ArrayList<Integer>();
+					
+					int nIncontri = 0;
+					
+			        for (int t = 1; t <= this.roundsNumber  ; t++)
+			        {
+
+			    
+			            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
+			            {
+			            	int absVar = Utils.getAbsoluteVar(i, j1, t,this.companiesNumber);
+		            		c.add(absVar);
+
+			            }
+			    
+			            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
+			            {
+			            	int absVar = Utils.getAbsoluteVar(j2, i, t,this.companiesNumber);
+			            	c.add(absVar);
+			            	
+			            }	             
+			          
+			        }
+			        
+			        int[] colno = new int[c.size()];
+		            double[] sparserow = new double[c.size()];
+		            
+		            for (int j = 0; j < c.size(); j++) {
+		            	colno[j] = c.get(j);
+		            	sparserow[j] = 1.0;
+					}	       
+		            
+		            solv.addConstraintex(c.size(),sparserow, colno,LpSolve.GE,this.minIncontri);
+			        
+			       
+			    }
 			   
 			  
 			  solv.setAddRowmode(false);
 			  
-			  //set binary variables
 			  
 			  for (int i = 1; i <= numSolution; i++) {
 				solv.setBinary(i, true);
 			  }
-
-			  //solv.setBreakAtFirst(true);
-			  
-			  // solve the problem
 
 			  solv.solve();
 			  
@@ -267,9 +282,6 @@ public class Solver {
 		return ret;
 	}
 
-	public ArrayList<Constraint> getConstraints() {
-		return constraints;
-	}
 
 	public int[][] getObjCoefficient() {
 		return objCoefficient;

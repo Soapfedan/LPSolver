@@ -3,16 +3,9 @@ package main;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
-
+import java.util.HashMap;
 import io.IOHandler;
-import io.Line;
-import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
-import solve.Constraint;
-import solve.Creator;
 import solve.DomainCreator;
 import solve.Solver;
 
@@ -23,7 +16,7 @@ public class Main {
 
 	public static void main(String[] args) throws LpSolveException {
 		
-		int N = 10;
+		int N = 20;
 		int T = 3;
 		int L = 0;
 		String inputFilePath = "resources/pref.txt";
@@ -37,7 +30,7 @@ public class Main {
 	
 	public static void doTests(int N, int T, int L, double[] variables) {
 		
-		boolean res1=false,res2=false;
+		boolean res1=false,res2=false,res3=false;
 		
 		if(variables.length > 0) {
 			
@@ -57,6 +50,11 @@ public class Main {
 			
 			res2 = suite.checkCompaniesMatchAllRounds(variables);
 			
+			/**
+			 * ogni azienda deve avere un numero minimo di incontri
+			 */
+			
+			res3 = suite.checkMinIncontri(variables);
 		}
 		
 		
@@ -93,7 +91,7 @@ public class Main {
 		 * Scrittura della funzione obiettivo
 		 */
 		
-		//cc.writeObj(N_PREFERENZE);
+		cc.writeObj(N_PREFERENZE);
 		
 		finish = Instant.now().toEpochMilli();
 		 
@@ -145,6 +143,8 @@ public class Main {
 
 	public static void printListaIncontri(int N, int T, double[] variables) {
 		
+		HashMap<Integer, String> map = new HashMap<>();
+		
 		System.out.println("");
 		System.out.println("--------- Statistiche Lista Incontri Aziende--------");
 		System.out.println("");
@@ -188,12 +188,20 @@ public class Main {
 	        
 	        String entry = "Azienda "+i+", "+nIncontri+ " incontri, ["+String.join(",", c)+"]";
 	        
-	        System.out.println(entry);
+	        if(!map.containsKey(nIncontri)) {
+	        	
+	        	map.put(nIncontri, entry + " \n");
+	        }else {
+	        	map.put(nIncontri, map.get(nIncontri) + entry + "\n");
+	        }
 	       
 	    }
 		
 
-		System.out.println("");
+		for(int i = T; i>0;i--) {
+			if(map.get(i) != null)
+			System.out.println(map.get(i));
+		}
 	}
 	
 	public static void printListaPreferenze(int N, int T, double[] variables) {
@@ -202,6 +210,7 @@ public class Main {
 		System.out.println("--------- Statistiche Preferenze Aziende --------");
 		System.out.println("");
 		
+
 		
 		for (int i = 1; i <= N; i++)
 	    {
@@ -245,12 +254,16 @@ public class Main {
 	        	entry += " -> WARNING";
 	        }
 	        
+
+	        
 	        System.out.println(entry);
 	       
 	    }
 		
 
-		System.out.println("");
+
+		
 	}
+	
 	
 }
