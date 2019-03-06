@@ -28,9 +28,11 @@ public class TestSuite {
 	 */
 	
 	
-	public void checkCompanyOneMatchPerRound(double[] vars){
+	public boolean checkCompanyOneMatchPerRound(double[] vars){
 		
-		System.out.println("---------------- Lista Errori Vincolo 1 --------------------");
+		boolean ret = true;
+		
+		System.out.println("---------------- Inizio Test Vincolo 1 --------------------");
 	
 		for (int i = 1; i <= this.companiesNumber; i++)
 	    {
@@ -41,14 +43,14 @@ public class TestSuite {
 	    
 	            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
 	            {
-	            	int absVar = this.absoluteVar(i, j1, t);
+	            	int absVar = Utils.getAbsoluteVar(i, j1, t,this.companiesNumber);
 	            	c.add(absVar);
 
 	            }
 	    
 	            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
 	            {
-	            	int absVar = this.absoluteVar(j2, i, t);
+	            	int absVar = Utils.getAbsoluteVar(j2, i, t,this.companiesNumber);
 	            	c.add(absVar);
 	            	
 	            }
@@ -64,15 +66,24 @@ public class TestSuite {
 
 	            
 	            if(sum != 1) {
+	            	ret = false;
 	            	System.out.println("Errore: L'azienda " + i + " nel round "+ t + " in cui ha "+ sum + " incontri");
 	            }
 
 	           
 	          
 	        }
+	        
+	        
 	    }
 		
-		System.out.println("---------------- Fine Lista Errori Vincolo 1 --------------------");
+		if(ret) {
+			System.out.println(" Test Vincolo 1 - OK");
+		}else {
+			System.out.println(" Test Vincolo 1 - ERROR");
+		}
+		
+		return ret;
 		
 	}
 	
@@ -82,9 +93,11 @@ public class TestSuite {
 	 * ogni azienda, fra tutti i round, può incontrarsi al massimo una volta con ogni azienda
 	 */
 	
-	public void checkCompaniesMatchAllRounds(double[] vars) {
+	public boolean checkCompaniesMatchAllRounds(double[] vars) {
 		
-		System.out.println("---------------- Inizio Lista Errori Vincolo 2 --------------------");
+		boolean ret = true;
+		
+		System.out.println("---------------- Inizio Test Vincolo 2 --------------------");
 		
 		for (int i = 1; i <= companiesNumber*(companiesNumber-1)/2; i++) {
 			//scrivo la riga			
@@ -112,80 +125,23 @@ public class TestSuite {
 			}
 
             int[] i_j_t = new int[3];
-            i_j_t = this.getRevertSolution(i);
+            i_j_t = Utils.getOriginalThreeIndexes(i,this.companiesNumber,this.roundsNumber);
             
             if(sum > 1) {
+            	ret = false;
             	System.out.println("Errore: L'azienda " + i_j_t[0] + " e l'azienda "+ i_j_t[1] + " hanno più di un incontro");
             }
 
 			
 		}
 		
-		System.out.println("---------------- Fine Lista Errori Vincolo 2 --------------------");
+		if(ret) {
+			System.out.println(" Test Vincolo 2 - OK");
+		}else {
+			System.out.println(" Test Vincolo 2 - ERROR");
+		}
 		
-
-	}
-	
-	
-	
-	
-	
-	private int absoluteVar(int i, int j,int t) {
-		return ( (((i-1)*(i-1)+(i-1)) / 2) - (i-1-j) + ((this.companiesNumber*this.companiesNumber-this.companiesNumber) / 2) * (t-1) );
-	}
-	
-	/**
-	 * Metodo che trasforma da indice assoluto alla tripletta di indici
-	 * @param ai è l'indice assoluto della variabile da ritrasformare
-	 * @return un array con le 3 variabili
-	 */
-	
-	private int[] getRevertSolution(int ai) {
-		
-		int[] i_j_t = new int[3];
-		
-		
-		for (int i = 1; i <= this.companiesNumber; i++)
-	    {
-	        for (int t = 1; t <= this.roundsNumber ; t++)
-	        {
-	    
-	            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
-	            {
-	            	int absVar = this.absoluteVar(i, j1, t);
-	      
-	            	if(absVar == ai) {
-	            		
-	            		i_j_t[0] = i;
-        				i_j_t[1] = j1;
-						i_j_t[2] = t;
-						
-						return i_j_t;
-	            	}
-
-	            }
-	    
-	            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
-	            {
-	            	int absVar = this.absoluteVar(j2, i, t);
-
-	            	if(absVar == ai) {
-	            		
-	            		i_j_t[0] = j2;
-        				i_j_t[1] = i;
-						i_j_t[2] = t;
-						
-						return i_j_t;
-	            	}
-	            	
-	            }	            
-	           
-	          
-	        }
-	    }
-		
-		
-		return i_j_t;
+		return ret;
 	}
 	
 	

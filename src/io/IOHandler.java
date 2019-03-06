@@ -25,11 +25,10 @@ public class IOHandler {
 		
 	}
 	
-	public ArrayList<String[]> readFile(){
+	public ArrayList<String[]> readFile(String signSplitBy){
 		
 		  BufferedReader br = null;
 		  String line = "";
-		  String cvsSplitBy = ";";
 		  ArrayList<String[]> ret = new ArrayList<String[]>();
 		
 		  try {
@@ -38,7 +37,7 @@ public class IOHandler {
 		      while ((line = br.readLine()) != null) {
 		
 		          // use comma as separator
-		          String[] tokens = line.split(cvsSplitBy);	         	          
+		          String[] tokens = line.split(signSplitBy);	         	          
 		          
 		          ret.add(tokens);
 		
@@ -63,11 +62,10 @@ public class IOHandler {
 	}
 	
 	
-	public ArrayList<String[]> readFile(boolean debug){
+	public ArrayList<String[]> readFile(boolean debug,String signSplitBy){
 		
 		  BufferedReader br = null;
 		  String line = "";
-		  String cvsSplitBy = ";";
 		  ArrayList<String[]> ret = new ArrayList<String[]>();
 		
 		  try {
@@ -76,7 +74,7 @@ public class IOHandler {
 		      while ((line = br.readLine()) != null) {
 		
 		          // use comma as separator
-		          String[] tokens = line.split(cvsSplitBy);
+		          String[] tokens = line.split(signSplitBy);
 		          
 		          if(debug) {
 		        	  for (int i = 0; i < tokens.length; i++) {

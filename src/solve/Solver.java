@@ -11,6 +11,7 @@ import io.IOHandler;
 import io.Line;
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
+import main.Utils;
 
 public class Solver {
 	
@@ -36,15 +37,34 @@ public class Solver {
 		this.minIncontri = minIncontri;
 	}
 	
-
-
-	public void loadObjectiveCoefficient() {
+	private void initializePrefsMatr() {
 		
-		ArrayList<String[]> objs = this.objIO.readFile();
+		this.objCoefficient = new int[companiesNumber][companiesNumber];
+		
+		for (int i = 0; i < companiesNumber; i++) {
+			for (int j = 0; j < companiesNumber; j++) {
+				if(i != j) {
+					this.objCoefficient[i][j] = 1;
+				}
+			}
+		}
+	}
+	
+
+
+	private void loadObjectiveCoefficient() {
+
 		
 		
 		if(this.companiesNumber > 1) {
-			this.objCoefficient = new int[companiesNumber][companiesNumber];
+		
+			
+		//Devo inizializzare tutta la matrice con tutti 1 tranne che sulla diagonale
+		this.initializePrefsMatr();
+		
+		
+		
+		ArrayList<String[]> objs = this.objIO.readFile(" ");
 			
 			for (int i = 0; i < objs.size(); i++) {
 				
@@ -52,9 +72,31 @@ public class Solver {
 				
 				for (int j = 0; j < line.length; j++) {
 					
-					this.objCoefficient[i][j] = Integer.parseInt(line[j]);
+					String[] a1 = new String[2];
+					String[] a2 = new String[2];
+					
+					//Con a1 estraggo la coppia degli indici e il valore di preferenza es: 4_2:10 => ["4_2","10"]
+					a1 = line[j].split(":");
+
+					//Con a2 estraggo i due indici es: 4_2 => ["4","2"]
+					a2 = a1[0].split("_");
+					
+					int iIndex = Integer.parseInt(a2[0]);
+					int jIndex = Integer.parseInt(a2[1]);
+					int pref = Integer.parseInt(a1[1]);
+					
+					this.objCoefficient[iIndex-1][jIndex-1] = pref;
+					
+					
 				}
 			}
+		}
+		
+		for (int i = 0; i < companiesNumber; i++) {
+			for (int j = 0; j < companiesNumber; j++) {
+					System.out.print(this.objCoefficient[i][j]+ " ");
+			}
+			System.out.println("");
 		}
 		
 	}
@@ -75,7 +117,11 @@ public class Solver {
 			   //setto la funzione obiettivo
 			   
 				solv.setAddRowmode(true);
+				
+				//Carico i coefficienti in memoria
+				this.loadObjectiveCoefficient();
 
+				//Mi estraggo tutti i parametri
 			   solv.strSetObjFn(this.calcObjFunNumbers());
 
 			 
@@ -93,14 +139,14 @@ public class Solver {
 			    
 			            for (int j1 = 1; j1 <= this.companiesNumber && i > j1; j1++)
 			            {
-			            	int absVar = this.absoluteVar(i, j1, t);
+			            	int absVar = Utils.getAbsoluteVar(i, j1, t,this.companiesNumber);
 			            	c.add(absVar);
 
 			            }
 			    
 			            for (int j2 = i+1; j2 <= this.companiesNumber && j2 > i; j2++)
 			            {
-			            	int absVar = this.absoluteVar(j2, i, t);
+			            	int absVar = Utils.getAbsoluteVar(j2, i, t,this.companiesNumber);
 			            	c.add(absVar);
 			            	
 			            }
@@ -205,7 +251,7 @@ public class Solver {
 					
 			for (int j = 0; j < companiesNumber; j++) {
 				if(i>j) {
-					int sum = this.objCoefficient[i][j]*this.objCoefficient[j][i];
+					int sum = this.objCoefficient[i][j]*2;
 					
 					ret += sum + " ";
 				}
@@ -247,131 +293,10 @@ public class Solver {
 
 	public int getSolverResult() {
 		return solverResult;
-	}
+	}	
 	
 	
-	
-	public void solvePrint(){
-		
-		 ArrayList<Line> solution = new ArrayList<Line>();
-		 
-		 solution.add(new Line(""));
-		 
-		 this.outputIO.writeContent(solution);
-		
-		 try {
-			 
-			int numSolution = (this.companiesNumber * (this.companiesNumber-1))/2 * this.roundsNumber;
-			//System.out.println(numSolution);
-			LpSolve solv = LpSolve.makeLp(0, numSolution);
-			
-			//Dico che è un problema di massimo
-			
-			solv.setMaxim();
-			
-			//Mostro i dati del dominio applicativo
-			 
-			 solution.add(new Line("Dati Dominio",0));
-			 solution.add(new Line("",0));
-			 solution.add(new Line("N.Imprese = "+this.companiesNumber,0));
-			 solution.add(new Line("N.Round = "+this.roundsNumber,0));
-			 solution.add(new Line("N.Variabili = "+numSolution,0));
-			 
-			 solution.add(new Line("",0));
-			 solution.add(new Line("",0));
-			 
-			 // set objective function
-			 solution.add(new Line("Matrice di preferenza:",0));
-			 
-			 for (int i = 0; i < this.objCoefficient.length; i++) {	
-				 
-				 solution.add(new Line("[",2));
-					
-					for (int j = 0; j < this.objCoefficient.length; j++) {
-						
-						solution.add(new Line(String.valueOf(this.objCoefficient[i][j]),2));
-					}
-					
-				  solution.add(new Line("]",0));
-			}
-		  
-		   solution.add(new Line("",0));
-		   solution.add(new Line("Funzione Obiettivo: ",0));
-		   solution.add(new Line("[" + this.calcObjFunNumbers() + "]",0));			   
 
-		   //setto la funzione obiettivo
-		   
-		   solv.setAddRowmode(true);
-		   
-		   //System.out.println(this.calcObjFunNumbers());
-		   solv.strSetObjFn(this.calcObjFunNumbers());
-		   			   
-		   solution.add(new Line("",0));
-		 
-		  // add constraints
-		   
-		  solution.add(new Line("Vincoli:",0));
-		  
-		  for(Constraint c : this.constraints) {
-			  solv.strAddConstraint(c.getCoefficients(), c.getCompareSign(), c.getConstTerm());
-			  solution.add(new Line("[ "+c.getCoefficients()+" "+ Constraint.getSign(c.getCompareSign())+" "+c.getConstTerm()+" ]",0));
-		  }
-		  
-		  //set binary variables
-		  
-		  for (int i = 1; i <= numSolution; i++) {
-			solv.setBinary(i, true);
-		  }
-
-		  //solv.setBreakAtFirst(true);
-		  
-		  solv.setAddRowmode(false);
-
-		  // solve the problem
-		  System.out.println("IsOptimal: "+solv.solve());
-		  this.solverResult = solv.solve();
-		  
-		  
-		  // print solution 
-		  solution.add(new Line("",0));
-		  solution.add(new Line("",0));
-		  
-		  solution.add(new Line("Risultato Funzione obiettivo:",2));
-		  
-		  this.objRes = solv.getObjective();
-		  
-		  solution.add(new Line(String.valueOf(solv.getObjective()),0));
-		  
-		  solution.add(new Line("",0));
-		  
-		  double[] var = solv.getPtrVariables();
-		  for (int i = 0; i < var.length; i++) {
-			  solution.add(new Line("x[" + i + "] = " + var[i],0));
-		  }
-		  
-		  solution.add(new Line("",0));
-		  
-		  solution.add(new Line("Tempo impiegato: "));
-		  solution.add(new Line(String.valueOf(solv.timeElapsed()),0));
-		  
-		  this.timeElapsed = solv.timeElapsed();
-		  
-
-		  // delete the problem and free memory
-		  solv.deleteLp();
-			  
-		  this.outputIO.appendContent(solution);
-		  
-		} catch (LpSolveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	private int absoluteVar(int i, int j,int t) {
-		return ( (((i-1)*(i-1)+(i-1)) / 2) - (i-1-j) + ((this.companiesNumber*this.companiesNumber-this.companiesNumber) / 2) * (t-1) );
-	}
 	
 	
 	
