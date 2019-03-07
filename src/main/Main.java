@@ -27,11 +27,13 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-			if(args.length == 4) {
+		String[] argsc = {"400","8","0","res/results/400_8_0.txt"};
+		
+			if(argsc.length == 4) {
 				
 				try {
 				
-				Main.getJavaArguments(args);
+				Main.getJavaArguments(argsc);
 				
 				Main.loadObjectiveCoefficient();
 				
@@ -65,7 +67,7 @@ public class Main {
 		
 		DomainCreator dc = new DomainCreator(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
 		
-		//dc.writeObj(N_PREFERENZE);
+		dc.writeObj(N_PREFERENZE);
 		
 	}
 
@@ -183,7 +185,7 @@ public class Main {
 	     */
 
 	    printListaIncontri(N,T,objVars);
-	    printListaPreferenze(N, T, objVars);
+	    //printListaPreferenze(N, T, objVars);
 		
 	    return objVars;
 		
@@ -371,7 +373,6 @@ public class Main {
 		System.out.println("");
 		System.out.println("--------- Statistiche Preferenze Aziende --------");
 		System.out.println("");
-		
 
 		
 		for (int i = 1; i <= N; i++)
@@ -388,7 +389,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(i, j1, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i][j1] > 1) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j1-1] > 1) {
 	            		nIncontri += 1;
 
 	            	}
@@ -400,7 +401,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(j2, i, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2][i] > 1) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2-1][i-1] > 1) {
 	            		nIncontri += 1;
 
 	            	}

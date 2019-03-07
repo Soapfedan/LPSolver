@@ -47,7 +47,7 @@ public class DomainCreator {
 											
 			   String l = "";
 			   if(count < N_PREFERENZE && i>j) {
-				   int el = (int) (Math.random() * companiesNumber % i);
+				   int el = j* companiesNumber % i;
 				   if(el == 0) el = j;
 				   l = i+","+el+","+10;
 				   count++;
