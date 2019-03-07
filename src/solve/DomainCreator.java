@@ -1,5 +1,6 @@
 package solve;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +15,14 @@ public class DomainCreator {
 	private int minTables;
 	private String prefFilePath;
 	
-	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, String outputIO) {
+	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, String outputIO) throws IOException {
 		this.companiesNumber = companiesNumber;
 		this.roundsNumber = roundsNumber;
 		this.minTables = minTables;
 		this.prefFilePath = outputIO;
 
+		File file = new File(this.prefFilePath);
+		file.createNewFile();
 
 		this.numVariables = this.companiesNumber * (this.companiesNumber-1)/2 * this.roundsNumber;
 		
@@ -28,12 +31,15 @@ public class DomainCreator {
 	}
 	
 	
-	public void writeObj(int N_PREFERENZE) {
+	public void writeObj(int N_PREFERENZE) throws IOException {
 		
 		
 		int count = 0;
 		 ArrayList<String> line = new ArrayList<String>();
 		 
+		 FileWriter wr = new FileWriter(this.prefFilePath,false);
+		 wr.write("");
+		 wr.close();
 		
 		for (int i = 1; i <= companiesNumber; i++) {										
 
@@ -41,28 +47,23 @@ public class DomainCreator {
 											
 			   String l = "";
 			   if(count < N_PREFERENZE && i>j) {
-				   int el = j;
-				   
+				   int el = (int) (Math.random() * companiesNumber % i);
+				   if(el == 0) el = j;
 				   l = i+","+el+","+10;
 				   count++;
 				   line.add(l+"\n");					
 			   }
-
 		
 			}
-			
 			count = 0;
-			try {
-				FileWriter wr = new FileWriter(this.prefFilePath,false);
-				for (String l: line) {
-					wr.write(l);
-				}
-				wr.close();
+			
+			wr = new FileWriter(this.prefFilePath,true);
+			for (String l: line) {
+				wr.write(l);
+			}
+			wr.close();
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
+				
 			
 			line.clear();
 		}

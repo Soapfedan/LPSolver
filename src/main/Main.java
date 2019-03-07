@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import lpsolve.LpSolveException;
+import solve.DomainCreator;
 import solve.Solver;
 
 public class Main {
@@ -23,28 +25,38 @@ public class Main {
 	private static Solver SOLVER_SYSTEM;
 
 
-	public static void main(String[] args) throws LpSolveException, IOException {
+	public static void main(String[] args) {
 
 		
-		if(args.length == 4) {
-			
-			Main.getJavaArguments(args);
-			
-			Main.loadObjectiveCoefficient();
-			
-			double[] variables = Main.solve(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
-			
-			Main.writeObjToFile(variables);
-			
-		}else {
-			
-			System.out.println("Attenzione errore nel caricamento dei parametri del problema");
-		}
+		
+			if(args.length == 4) {
+				
+				try {
+				
+				Main.getJavaArguments(args);
+				
+				Main.loadObjectiveCoefficient();
+				
+				double[] variables = Main.solve(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
+				
+				Main.doConstraintsTest(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, variables);
+				
+				Main.writeObjToFile(variables);
+				
+				} catch (IOException e) {
+					System.out.println(Arrays.toString(e.getStackTrace()));
+				}
+				
+			}else {
+				
+				System.out.println("Attenzione errore nel caricamento dei parametri del problema");
+			}
+		
 		
 		
 	}
 	
-	public static void getJavaArguments(String[] args) {
+	public static void getJavaArguments(String[] args) throws IOException {
 			
 		Main.N_COMPANIES = Integer.parseInt(args[0]);
 		Main.N_ROUNDS = Integer.parseInt(args[1]);
@@ -53,11 +65,23 @@ public class Main {
 		Main.OUTPUT_FILE_PATH = Main.INPUT_FILE_PATH + ".out";
 		Main.SOLVER_SYSTEM = new Solver(Main.N_COMPANIES,Main.N_ROUNDS,Main.N_MIN_BLOCK);
 		
+		DomainCreator dc = new DomainCreator(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
+		
+		dc.writeObj(N_PREFERENZE);
 		
 	}
 
 
 	public static void loadObjectiveCoefficient() throws IOException {
+
+		
+		long start;
+		long finish;
+		long timeElapsed;
+		
+		 System.out.println("Inizio Lettura Coefficienti Fun Obiettivo");
+		    
+	    start = Instant.now().toEpochMilli();
 
 		
 		int[][] objCoefMatrix = Main.initializePrefsMatr();				
@@ -110,6 +134,11 @@ public class Main {
 		}
 		
 		Main.SOLVER_SYSTEM.setObjCoefficient(objCoefMatrix);
+		
+	   finish = Instant.now().toEpochMilli();
+
+	    timeElapsed = finish - start;
+	    System.out.println("Fine Lettura Coefficienti Fun Obiettivo - Tempo Fase: "+String.valueOf(timeElapsed)+ " milliseconds");
 		
 	}
 	
