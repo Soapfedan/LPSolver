@@ -27,13 +27,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		String[] argsc = {"400","8","0","res/results/400_8_0.txt"};
 		
-			if(argsc.length == 4) {
+			if(args.length == 4) {
 				
 				try {
 				
-				Main.getJavaArguments(argsc);
+				Main.getJavaArguments(args);
 				
 				Main.loadObjectiveCoefficient();
 				
@@ -64,10 +63,6 @@ public class Main {
 		Main.INPUT_FILE_PATH = args[3];
 		Main.OUTPUT_FILE_PATH = Main.INPUT_FILE_PATH + ".out";
 		Main.SOLVER_SYSTEM = new Solver(Main.N_COMPANIES,Main.N_ROUNDS,Main.N_MIN_BLOCK);
-		
-		DomainCreator dc = new DomainCreator(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
-		
-		dc.writeObj(N_PREFERENZE);
 		
 	}
 
@@ -185,7 +180,7 @@ public class Main {
 	     */
 
 	    printListaIncontri(N,T,objVars);
-	    //printListaPreferenze(N, T, objVars);
+	    printListaPreferenze(N, T, objVars);
 		
 	    return objVars;
 		
@@ -328,7 +323,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(i, j1, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j1-1] > 1) {
 	            		nIncontri += 1;
 	            		c.add("az"+j1);
 	            	}
@@ -340,7 +335,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(j2, i, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2-1][i-1] > 1) {
 	            		nIncontri += 1;
 	            		c.add("az"+j2);
 	            	}
