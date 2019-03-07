@@ -3,18 +3,13 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import lpsolve.LpSolveException;
-import solve.DomainCreator;
 import solve.Solver;
 
 public class Main {
@@ -29,7 +24,7 @@ public class Main {
 
 
 	public static void main(String[] args) throws LpSolveException, IOException {
-				
+
 		
 		if(args.length == 4) {
 			
@@ -164,7 +159,7 @@ public class Main {
 
 	public static void writeObjToFile(double[] variables) throws IOException {
 		
-		int[][][]
+		int[][][] results = new int[Main.N_COMPANIES][Main.N_COMPANIES][Main.N_ROUNDS];
 		
 		for (int i = 1; i <= Main.N_COMPANIES; i++)
 	    {
@@ -179,7 +174,7 @@ public class Main {
 	            	int absVar = Utils.getAbsoluteVar(i, j1, t,Main.N_COMPANIES);
 	            	
 	            	if(variables[absVar-1] == 1.0) {
-	            		content.add(i+","+j1+","+t+"\n");
+	            		results[i-1][j1-1][t-1] = 1;
 
 	            	}
 	            	
@@ -191,7 +186,7 @@ public class Main {
 	            	int absVar = Utils.getAbsoluteVar(j2, i, t,Main.N_COMPANIES);
 	            	
 	            	if(variables[absVar-1] == 1.0) {
-	            		content.add(j2+","+i+","+t+"\n");
+	            		results[j2-1][i-1][t-1] = 1;
 
 	            	}
 	            	
@@ -206,9 +201,17 @@ public class Main {
 		outputFile.createNewFile();
 		FileWriter wr = new FileWriter(Main.OUTPUT_FILE_PATH,false);
 	
-		for (String l: content) {
-			wr.write(l);
+		for (int t = 1; t <= N_ROUNDS; t++) {
+			for (int i = 1; i <= Main.N_COMPANIES; i++) {
+				for (int j = 1; j <= Main.N_COMPANIES; j++) {
+					if(results[i-1][j-1][t-1] == 1) {
+						wr.write(i+","+j+","+t+"\n");
+					}
+				}
+			}
 		}
+			
+		
 		wr.close();
 			
 		

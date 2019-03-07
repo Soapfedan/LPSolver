@@ -28,9 +28,6 @@ public class Solver {
 		this.roundsNumber = roundsNumber;
 		this.minIncontri = minIncontri;
 		
-		System.out.println(this.companiesNumber);
-		System.out.println(this.roundsNumber);
-		System.out.println(this.minIncontri);
 	}
 	
 	
@@ -176,7 +173,7 @@ public class Solver {
 
 			  solv.solve();
 			  
-			  System.out.println(solv.getObjective());
+			  System.out.println("Valore Funzione obiettivo "+solv.getObjective());
 			  double[] var = solv.getPtrVariables();
 			  
 			  for (int i = 0; i < var.length; i++) {
