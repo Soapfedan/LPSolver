@@ -26,8 +26,6 @@ public class Main {
 
 
 	public static void main(String[] args) {
-
-		
 		
 			if(args.length == 4) {
 				
@@ -67,7 +65,7 @@ public class Main {
 		
 		DomainCreator dc = new DomainCreator(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
 		
-		dc.writeObj(N_PREFERENZE);
+		//dc.writeObj(N_PREFERENZE);
 		
 	}
 
@@ -390,7 +388,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(i, j1, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i][j1] > 1) {
 	            		nIncontri += 1;
 
 	            	}
@@ -402,7 +400,7 @@ public class Main {
 	            {
 	            	int absVar = Utils.getAbsoluteVar(j2, i, t,N);
 	            	
-	            	if(variables[absVar-1] == 1.0) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2][i] > 1) {
 	            		nIncontri += 1;
 
 	            	}
