@@ -1,7 +1,9 @@
 package solve;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import io.IOHandler;
+import main.Main;
 
 
 public class DomainCreator {
@@ -10,16 +12,15 @@ public class DomainCreator {
 	private int roundsNumber;
 	private int numVariables;
 	private int minTables;
-	private IOHandler outputIO;
+	private String prefFilePath;
 	
-	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, IOHandler outputIO) {
+	public DomainCreator(int companiesNumber, int roundsNumber, int minTables, String outputIO) {
 		this.companiesNumber = companiesNumber;
 		this.roundsNumber = roundsNumber;
 		this.minTables = minTables;
+		this.prefFilePath = outputIO;
 
-		this.outputIO = outputIO;
-		
-		
+
 		this.numVariables = this.companiesNumber * (this.companiesNumber-1)/2 * this.roundsNumber;
 		
 		
@@ -33,7 +34,6 @@ public class DomainCreator {
 		int count = 0;
 		 ArrayList<String> line = new ArrayList<String>();
 		 
-		 outputIO.writeContent(line);
 		
 		for (int i = 1; i <= companiesNumber; i++) {										
 
@@ -52,7 +52,17 @@ public class DomainCreator {
 			}
 			
 			count = 0;
-			outputIO.appendContent(line);			
+			try {
+				FileWriter wr = new FileWriter(this.prefFilePath,false);
+				for (String l: line) {
+					wr.write(l);
+				}
+				wr.close();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
 			
 			line.clear();
 		}

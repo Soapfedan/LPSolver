@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import io.IOHandler;
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
 import main.Utils;
@@ -14,9 +13,6 @@ import main.Utils;
 public class Solver {
 	
 
-	private IOHandler objIO;
-	private IOHandler constraintsIO;
-	private IOHandler outputIO;
 	private int[][] objCoefficient;
 	private int companiesNumber;
 	private int roundsNumber;
@@ -26,68 +22,18 @@ public class Solver {
 	private int solverResult;
 	
 	
-	public Solver(int companiesNumber, int roundsNumber, int minIncontri,String objCoefficientsFilePath) {
+	public Solver(int companiesNumber, int roundsNumber, int minIncontri) {
 		
-		this.objIO = new IOHandler(objCoefficientsFilePath);
 		this.companiesNumber = companiesNumber;
 		this.roundsNumber = roundsNumber;
 		this.minIncontri = minIncontri;
+		
+		System.out.println(this.companiesNumber);
+		System.out.println(this.roundsNumber);
+		System.out.println(this.minIncontri);
 	}
 	
-	private void initializePrefsMatr() {
-		
-		this.objCoefficient = new int[companiesNumber][companiesNumber];
-		
-		for (int i = 0; i < companiesNumber; i++) {
-			for (int j = 0; j < companiesNumber; j++) {
-				if(i != j) {
-					this.objCoefficient[i][j] = 1;
-				}
-			}
-		}
-	}
 	
-
-
-	private void loadObjectiveCoefficient() {
-
-		
-		
-		if(this.companiesNumber > 1) {
-					
-		this.initializePrefsMatr();				
-		
-		ArrayList<String[]> objs = this.objIO.readFile(" ");
-			
-			for (int i = 0; i < objs.size(); i++) {
-				
-				String[] line = objs.get(i);
-				
-				for (int j = 0; j < line.length; j++) {
-					
-					String[] parameters = new String[3];
-					
-					parameters = line[j].split(",");
-					
-					int iIndex = Integer.parseInt(parameters[0]);
-					int jIndex = Integer.parseInt(parameters[1]);
-					int pref = Integer.parseInt(parameters[2]);
-					
-					this.objCoefficient[iIndex-1][jIndex-1] = pref;
-					
-					
-				}
-			}
-		}
-		
-		for (int i = 0; i < companiesNumber; i++) {
-			for (int j = 0; j < companiesNumber; j++) {
-					System.out.print(this.objCoefficient[i][j]+ " ");
-			}
-			System.out.println("");
-		}
-		
-	}
 	
 
 	public double[] solve() {
@@ -101,8 +47,6 @@ public class Solver {
 				solv.setMaxim();				
 			   
 				solv.setAddRowmode(true);
-				
-				this.loadObjectiveCoefficient();
 
 			   solv.strSetObjFn(this.calcObjFunNumbers());
 
@@ -305,7 +249,13 @@ public class Solver {
 
 	public int getSolverResult() {
 		return solverResult;
+	}
+
+	public void setObjCoefficient(int[][] objCoefficient) {
+		this.objCoefficient = objCoefficient;
 	}	
+	
+	
 	
 	
 

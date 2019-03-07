@@ -2,8 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import io.IOHandler;
 import lpsolve.LpSolve;
 
 public class TestSuite {

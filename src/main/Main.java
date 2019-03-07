@@ -1,10 +1,18 @@
 package main;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import io.IOHandler;
 import lpsolve.LpSolveException;
 import solve.DomainCreator;
 import solve.Solver;
@@ -12,23 +20,220 @@ import solve.Solver;
 public class Main {
 	
 	private static int N_PREFERENZE = 3;
+	private static int N_COMPANIES;
+	private static int N_ROUNDS;
+	private static int N_MIN_BLOCK;
+	private static String INPUT_FILE_PATH;
+	private static String OUTPUT_FILE_PATH;
+	private static Solver SOLVER_SYSTEM;
 
 
-	public static void main(String[] args) throws LpSolveException {
+	public static void main(String[] args) throws LpSolveException, IOException {
+				
 		
-		int N = 20;
-		int T = 3;
-		int L = 0;
-		String inputFilePath = "resources/pref.txt";
-
-		double[] variables = solve(N,T,L,inputFilePath);
-		
-		doTests(N,T,L,variables);
+		if(args.length == 4) {
+			
+			Main.getJavaArguments(args);
+			
+			Main.loadObjectiveCoefficient();
+			
+			double[] variables = Main.solve(Main.N_COMPANIES, Main.N_ROUNDS, Main.N_MIN_BLOCK, Main.INPUT_FILE_PATH);
+			
+			Main.writeObjToFile(variables);
+			
+		}else {
+			
+			System.out.println("Attenzione errore nel caricamento dei parametri del problema");
+		}
 		
 		
 	}
 	
-	public static void doTests(int N, int T, int L, double[] variables) {
+	public static void getJavaArguments(String[] args) {
+			
+		Main.N_COMPANIES = Integer.parseInt(args[0]);
+		Main.N_ROUNDS = Integer.parseInt(args[1]);
+		Main.N_MIN_BLOCK = Integer.parseInt(args[2]);
+		Main.INPUT_FILE_PATH = args[3];
+		Main.OUTPUT_FILE_PATH = Main.INPUT_FILE_PATH + ".out";
+		Main.SOLVER_SYSTEM = new Solver(Main.N_COMPANIES,Main.N_ROUNDS,Main.N_MIN_BLOCK);
+		
+		
+	}
+
+
+	public static void loadObjectiveCoefficient() throws IOException {
+
+		
+		int[][] objCoefMatrix = Main.initializePrefsMatr();				
+		
+		if(Main.N_COMPANIES > 1) {
+		
+			  BufferedReader br = null;
+			  String line = "";
+			
+		      br = new BufferedReader(new FileReader(Main.INPUT_FILE_PATH));
+		      
+		      while ((line = br.readLine()) != null) {
+		
+		          String[] parameters = line.split(",");	         	          
+		          
+		          if(parameters.length == 3) {
+		        	  
+		        	  int iIndex = Integer.parseInt(parameters[0]);
+		        	  int jIndex = Integer.parseInt(parameters[1]);
+		        	  int pref = Integer.parseInt(parameters[2]);
+		        	  
+		        	  objCoefMatrix[iIndex-1][jIndex-1] = pref;
+		          }
+		
+		      }
+		
+
+		      if (br != null) {
+		         
+		              br.close();
+		              
+		         
+		      }
+			                
+			  
+		
+		}
+		
+		for (int i = 0; i < N_COMPANIES; i++) {
+			for (int j = 0; j < N_COMPANIES; j++) {
+					System.out.print(objCoefMatrix[i][j]+ " ");
+			}
+			System.out.println("");
+		}
+		
+		Main.SOLVER_SYSTEM.setObjCoefficient(objCoefMatrix);
+		
+	}
+	
+	
+	public static double[] solve(int N, int T, int L,String inputFilePath) {
+		
+
+		long start;
+		long finish;
+		long timeElapsed;
+
+		
+		/**
+		 * Creazione del dominio
+		 */
+		
+		System.out.println("Elapsed Time (N = "+N+" T = "+T+" L = "+L+")"); 
+	
+  
+
+	    
+	    System.out.println("Inizio Fase Risoluzione Sistema");
+	    
+	    start = Instant.now().toEpochMilli();
+
+		
+		/**
+		 * 	Chiamata esecuzione risoluzione algoritmo
+		 */
+	    
+	    double[] objVars = new double[(N*N-N)/2*T];
+		objVars = Main.SOLVER_SYSTEM.solve();
+		
+
+		 
+	    finish = Instant.now().toEpochMilli();
+
+	    timeElapsed = finish - start;
+	    System.out.println("Fine Elaborazione - Tempo Fase: "+String.valueOf(timeElapsed)+ " milliseconds");
+	    
+
+		 /**
+	     * Fine risoluzione del problema
+	     */
+
+	    printListaIncontri(N,T,objVars);
+	    printListaPreferenze(N, T, objVars);
+		
+	    return objVars;
+		
+		
+	}
+
+	public static void writeObjToFile(double[] variables) throws IOException {
+		
+		int[][][]
+		
+		for (int i = 1; i <= Main.N_COMPANIES; i++)
+	    {
+
+			
+	        for (int t = 1; t <= Main.N_ROUNDS ; t++)
+	        {
+
+	    
+	            for (int j1 = 1; j1 <= Main.N_COMPANIES && i > j1; j1++)
+	            {
+	            	int absVar = Utils.getAbsoluteVar(i, j1, t,Main.N_COMPANIES);
+	            	
+	            	if(variables[absVar-1] == 1.0) {
+	            		content.add(i+","+j1+","+t+"\n");
+
+	            	}
+	            	
+
+	            }
+	    
+	            for (int j2 = i+1; j2 <= Main.N_COMPANIES && j2 > i; j2++)
+	            {
+	            	int absVar = Utils.getAbsoluteVar(j2, i, t,Main.N_COMPANIES);
+	            	
+	            	if(variables[absVar-1] == 1.0) {
+	            		content.add(j2+","+i+","+t+"\n");
+
+	            	}
+	            	
+	            	
+	            }	             
+	          
+	        }
+		
+	    }
+		
+		File outputFile = new File(Main.OUTPUT_FILE_PATH);
+		outputFile.createNewFile();
+		FileWriter wr = new FileWriter(Main.OUTPUT_FILE_PATH,false);
+	
+		for (String l: content) {
+			wr.write(l);
+		}
+		wr.close();
+			
+		
+	}
+	
+	
+	
+	private static int[][] initializePrefsMatr() {
+		
+		int [][] objCoefficient = new int[Main.N_COMPANIES][Main.N_COMPANIES];
+		
+		for (int i = 0; i < Main.N_COMPANIES; i++) {
+			for (int j = 0; j < Main.N_COMPANIES; j++) {
+				if(i != j) {
+					objCoefficient[i][j] = 1;
+				}
+			}
+		}
+		
+		return objCoefficient;
+		
+		
+	}
+	
+	private static void doConstraintsTest(int N, int T, int L, double[] variables) {
 		
 		boolean res1=false,res2=false,res3=false;
 		
@@ -61,87 +266,8 @@ public class Main {
 	}
 	
 	
-	public static double[] solve(int N, int T, int L,String inputFilePath) {
-			
-		DomainCreator cc;
-		Solver	 testSolver;
-		long start;
-		long finish;
-		long timeElapsed;
-
-		
-		/**
-		 * Creazione del dominio
-		 */
-		
-		System.out.println("Elapsed Time (N = "+N+" T = "+T+" L = "+L+")");
-		cc = new DomainCreator(N,T,L,new IOHandler(inputFilePath)); 
-		testSolver = new Solver(N,T,L,inputFilePath);
-
-		
-	    /**
-	     * Inizio scrittura della funzione obiettivo sul file
-	     */
-	    
-	    start = Instant.now().toEpochMilli();
-		System.out.println("Inizio Scrittura Funzione obiettivo ");
-		
-		
-		/**
-		 * Scrittura della funzione obiettivo
-		 */
-		
-		cc.writeObj(N_PREFERENZE);
-		
-		finish = Instant.now().toEpochMilli();
-		 
-	    timeElapsed = finish - start;
-	    System.out.println("Fine Scrittura Funzione obiettivo: "+String.valueOf(timeElapsed)+ " milliseconds");
-
-	    /**
-	     * Fine scrittura della funzione obiettivo sul file
-	     */
-	    
-
-	    
-	    
-	    /**
-	     * Inizio risoluzione del problema
-	     */
-	    
-	    System.out.println("Inizio Fase Risoluzione Sistema");
-	    
-	    start = Instant.now().toEpochMilli();
-
-		
-		/**
-		 * 	Chiamata esecuzione risoluzione algoritmo
-		 */
-	    
-	    double[] objVars = new double[(N*N-N)/2*T];
-		objVars = testSolver.solve();
-		
-
-		 
-	    finish = Instant.now().toEpochMilli();
-
-	    timeElapsed = finish - start;
-	    System.out.println("Fine Elaborazione - Tempo Fase: "+String.valueOf(timeElapsed)+ " milliseconds");
-	    
-
-		 /**
-	     * Fine risoluzione del problema
-	     */
-
-	    printListaIncontri(N,T,objVars);
-	    printListaPreferenze(N, T, objVars);
-		
-	    return objVars;
-		
-		
-	}
-
-	public static void printListaIncontri(int N, int T, double[] variables) {
+	
+	private static void printListaIncontri(int N, int T, double[] variables) {
 		
 		HashMap<Integer, String> map = new HashMap<>();
 		
@@ -204,7 +330,7 @@ public class Main {
 		}
 	}
 	
-	public static void printListaPreferenze(int N, int T, double[] variables) {
+	private static void printListaPreferenze(int N, int T, double[] variables) {
 		
 		System.out.println("");
 		System.out.println("--------- Statistiche Preferenze Aziende --------");
