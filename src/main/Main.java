@@ -75,11 +75,17 @@ public class Main {
 		          
 		          if(parameters.length == 3) {
 		        	  
+		        	  
+		        	  
 		        	  int iIndex = Integer.parseInt(parameters[0]);
 		        	  int jIndex = Integer.parseInt(parameters[1]);
 		        	  int pref = Integer.parseInt(parameters[2]);
 		        	  
-		        	  objCoefMatrix[iIndex-1][jIndex-1] = pref;
+		        	  if(iIndex <= Main.N_COMPANIES && jIndex <= Main.N_COMPANIES) {
+		        		  
+		        		  objCoefMatrix[iIndex-1][jIndex-1] = pref;
+		        	  }
+		        	  
 		          }
 		
 		      }
