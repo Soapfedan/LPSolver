@@ -1,0 +1,59 @@
+----------- Elenco Informazioni Macchina ----------------- 
+Java Version 	 	 	1.8.0_201
+Java Allocated Memory 	257425408 bytes 
+Java -Xmx 	 	 	 	3790077952 bytes 
+Os Architecture Version amd64
+Os System Name 	 	 	Windows 10
+Os System Version 	 	10.0
+ 
+ 
+Tempo impiegato per caricare le preferenze: 3 milliseconds 
+Memoria utilizzata per caricare le preferenze: 2684392 bytes 
+----------- Statistiche Programma ----------------- 
+
+Dati Dominio 
+N Aziende = 10 
+N Round = 4 
+Min Incontri = 2
+ 
+Valore Funzione Obiettivo 1556.0
+ 
+Tempo impiegato per la risoluzione del problema: 18 milliseconds 
+Memoria utilizzata per la risoluzione del problema: 2684392 bytes 
+
+
+--------- Statistiche Lista Incontri Aziende-------- 
+ 
+Azienda 1, 4 incontri, [az2,az4,az8,az10] 
+Azienda 2, 4 incontri, [az1,az10,az5,az6]
+Azienda 3, 4 incontri, [az8,az7,az9,az4]
+Azienda 4, 4 incontri, [az7,az1,az6,az3]
+Azienda 7, 4 incontri, [az4,az3,az10,az8]
+Azienda 8, 4 incontri, [az3,az5,az1,az7]
+Azienda 9, 4 incontri, [az10,az6,az3,az5]
+Azienda 10, 4 incontri, [az9,az2,az7,az1]
+
+Azienda 5, 3 incontri, [az8,az2,az9] 
+Azienda 6, 3 incontri, [az9,az4,az2]
+
+--------- Statistiche Preferenze Aziende -------- 
+ 
+Azienda 1: 4/3 
+Azienda 2: 4/3 
+Azienda 3: 4/3 
+Azienda 4: 4/3 
+Azienda 5: 3/3 
+Azienda 6: 3/3 
+Azienda 7: 4/3 
+Azienda 8: 4/3 
+Azienda 9: 4/3 
+Azienda 10: 4/3 
+---------------- Inizio Test Vincolo 1 -------------------- 
+
+Test Vincolo 1 - OK
+---------------- Inizio Test Vincolo 2 -------------------- 
+
+Test Vincolo 2 - OK
+---------------- Inizio Test Vincolo 3 -------------------- 
+
+Test Vincolo 3 - OK

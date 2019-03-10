@@ -20,15 +20,17 @@ public class Main {
 	private static int N_COMPANIES;
 	private static int N_ROUNDS;
 	private static int N_MIN_BLOCK;
+	public static int TO_PRINT_STATS;
 	private static String INPUT_FILE_PATH;
 	private static String OUTPUT_FILE_PATH;
+	public static String STATS_FILE_PATH;
 	private static Solver SOLVER_SYSTEM;
 
 
 	public static void main(String[] args) {
 		
 		
-			if(args.length == 4) {
+			if(args.length >= 4) {
 				
 				try {
 				
@@ -61,9 +63,21 @@ public class Main {
 		Main.N_ROUNDS = Integer.parseInt(args[1]);
 		Main.N_MIN_BLOCK = Integer.parseInt(args[2]);
 		Main.INPUT_FILE_PATH = args[3];
+		
+		if(args.length == 5) {
+			Main.TO_PRINT_STATS = Integer.parseInt(args[4]);
+		}
+		
+		
 		Main.OUTPUT_FILE_PATH = Main.INPUT_FILE_PATH + ".out";
 		Main.SOLVER_SYSTEM = new Solver(Main.N_COMPANIES,Main.N_ROUNDS,Main.N_MIN_BLOCK);
 		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			Main.STATS_FILE_PATH = Main.INPUT_FILE_PATH + ".stats";
+			Main.printEnviromentInfo();
+		}
+			
 	}
 
 
@@ -134,12 +148,37 @@ public class Main {
 
 	    timeElapsed = finish - start;
 	    System.out.println("Fine Lettura Coefficienti Fun Obiettivo - Tempo Fase: "+String.valueOf(timeElapsed)+ " milliseconds");
+	    
+	    
+	    
+	    if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			FileWriter wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() /1024*1024;
+			wr.write("Tempo impiegato per caricare le preferenze: "+String.valueOf(timeElapsed)+ " milliseconds \n");
+		    wr.write("Memoria utilizzata per caricare le preferenze: "+String.valueOf(usedMemory)+ " MB \n");
+	
+		    wr.close();
+		}
 		
 	}
 	
 	
-	public static double[] solve(int N, int T, int L,String inputFilePath) {
+	public static double[] solve(int N, int T, int L,String inputFilePath) throws IOException {
 		
+		FileWriter wr = null;
+		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+			wr.write("----------- Statistiche Programma ----------------- \n");
+		}
 
 		long start;
 		long finish;
@@ -152,7 +191,9 @@ public class Main {
 		
 		System.out.println("Elapsed Time (N = "+N+" T = "+T+" L = "+L+")"); 
 	
-  
+		if(Main.TO_PRINT_STATS == 1) {
+			wr.write("\nDati Dominio \nN Aziende = "+N+" \nN Round = "+T+" \nMin Incontri = "+L+""+"\n \n");
+		}
 
 	    
 	    System.out.println("Inizio Fase Risoluzione Sistema");
@@ -173,9 +214,23 @@ public class Main {
 
 	    timeElapsed = finish - start;
 	    System.out.println("Fine Elaborazione - Tempo Fase: "+String.valueOf(timeElapsed)+ " milliseconds");
-	    
 
-		 /**
+	    
+	    if(Main.TO_PRINT_STATS == 1) {
+	    	
+	    	wr.write("Valore Funzione Obiettivo "+Main.SOLVER_SYSTEM.getObjRes()+"\n \n");
+	    
+	    	long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() /1024*1024;
+		    wr.write("Tempo impiegato per la risoluzione del problema: "+String.valueOf(timeElapsed)+ " milliseconds \n");
+		    wr.write("Memoria utilizzata per la risoluzione del problema: "+String.valueOf(usedMemory)+ " MB \n\n");
+	
+		    wr.close();
+			
+	    }
+	    
+	    
+	    
+	    /**
 	     * Fine risoluzione del problema
 	     */
 
@@ -266,7 +321,7 @@ public class Main {
 		
 	}
 	
-	private static void doConstraintsTest(int N, int T, int L, double[] variables) {
+	private static void doConstraintsTest(int N, int T, int L, double[] variables) throws IOException {
 		
 		boolean res1=false,res2=false,res3=false;
 		
@@ -299,8 +354,42 @@ public class Main {
 	}
 	
 	
+	private static void printEnviromentInfo() throws IOException {
+		
+		
+		File statsFile = new File(Main.STATS_FILE_PATH);
+		statsFile.createNewFile();
+		FileWriter wr = new FileWriter (Main.STATS_FILE_PATH,false);
+		
+		wr.write("----------- Elenco Informazioni Macchina ----------------- \n");
+		
+		String version = System.getProperty("java.version");
+		String os_arch = System.getProperty("os.arch");
+		String os_name = System.getProperty("os.name");
+		String os_version = System.getProperty("os.version");
+		
+		long maxMemory = Runtime.getRuntime().maxMemory() /1024*1024;
+		long allocatedMemory = Runtime.getRuntime().totalMemory() /1024*1024;
+		//long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		
+		wr.write("Java Version \t \t \t"+ version +"\n");
+		wr.write("Java Allocated Memory \t"+ allocatedMemory +" MB \n");
+		wr.write("Java -Xmx \t \t \t \t"+ maxMemory +" MB \n");
+		wr.write("Os Architecture Version "+ os_arch +"\n");
+		wr.write("Os System Name \t \t \t"+ os_name +"\n");
+		wr.write("Os System Version \t \t"+ os_version +"\n \n \n");
+		
+		wr.close();
+		
+		
+		
+	}
 	
-	private static void printListaIncontri(int N, int T, double[] variables) {
+	
+	
+	private static void printListaIncontri(int N, int T, double[] variables) throws IOException {
+		
+		
 		
 		HashMap<Integer, String> map = new HashMap<>();
 		
@@ -361,13 +450,86 @@ public class Main {
 			if(map.get(i) != null)
 			System.out.println(map.get(i));
 		}
+		
+		
+		 if(Main.TO_PRINT_STATS == 1) {
+				
+				File statsFile = new File(Main.STATS_FILE_PATH);
+				statsFile.createNewFile();
+				FileWriter wr = new FileWriter (Main.STATS_FILE_PATH,true);
+				
+
+				wr.write("\n--------- Statistiche Lista Incontri Aziende-------- \n \n");
+				
+				for(int i = T; i>0;i--) {
+					if(map.get(i) != null)
+					wr.write(map.get(i) + "\n");
+				}
+				
+			    wr.close();
+		}
 	}
 	
-	private static void printListaPreferenze(int N, int T, double[] variables) {
+	private static void printListaPreferenze(int N, int T, double[] variables) throws IOException {
+		
+		int[] numPreferenze = new int[N];
+		
+		for (int i = 1; i <= N; i++)
+	    {
+
+			System.out.println(Arrays.toString(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1]));
+			int nIncontri = 0;
+			
+	    
+	            for (int j1 = 1; j1 <= N && i > j1; j1++)
+	            {
+	            	
+	            	
+	            	System.out.print(Main.SOLVER_SYSTEM.getObjCoefficient()[j1-1][i-1]);
+	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[j1-1][i-1] > 1) {
+	            		numPreferenze[i-1] += 1;
+	            	}
+	            	
+
+	            }
+	    
+	            for (int j2 = i+1; j2 <= N && j2 > i; j2++)
+	            {
+	            	System.out.print(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j2-1]);
+	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j2-1] > 1) {
+	            		numPreferenze[i-1] += 1;
+
+	            	}
+	            	
+	            	
+	            }	
+
+	        
+	      
+	       
+	    }
+		
+		System.out.println(Arrays.toString(numPreferenze));
+		
+		
 		
 		System.out.println("");
 		System.out.println("--------- Statistiche Preferenze Aziende --------");
 		System.out.println("");
+		
+		FileWriter wr = null;
+		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+
+			wr.write("--------- Statistiche Preferenze Aziende -------- \n \n");
+			
+		    
+		}
 
 		
 		for (int i = 1; i <= N; i++)
@@ -415,11 +577,21 @@ public class Main {
 
 	        
 	        System.out.println(entry);
+	        
+	        if(Main.TO_PRINT_STATS == 1 && wr != null) {
+				
+
+				wr.write(entry + " \n");
+				
+			    
+			}
 	       
 	    }
 		
 
-
+		if(wr != null) {
+			wr.close();
+		}
 		
 	}
 	

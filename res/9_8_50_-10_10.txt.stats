@@ -1,0 +1,91 @@
+----------- Elenco Informazioni Macchina ----------------- 
+Java Version 	 	 	1.8.0_201
+Java Allocated Memory 	257425408 bytes 
+Java -Xmx 	 	 	 	3790077952 bytes 
+Os Architecture Version amd64
+Os System Name 	 	 	Windows 10
+Os System Version 	 	10.0
+ 
+ 
+Tempo impiegato per caricare le preferenze: 2 milliseconds 
+Memoria utilizzata per caricare le preferenze: 2684392 bytes 
+----------- Statistiche Programma ----------------- 
+
+Dati Dominio 
+N Aziende = 9 
+N Round = 4 
+Min Incontri = 2
+ 
+Valore Funzione Obiettivo -1.0E30
+ 
+Tempo impiegato per la risoluzione del problema: 909154 milliseconds 
+Memoria utilizzata per la risoluzione del problema: 2684392 bytes 
+
+
+--------- Statistiche Lista Incontri Aziende-------- 
+ 
+--------- Statistiche Preferenze Aziende -------- 
+ 
+Azienda 1: 0/3 -> WARNING 
+Azienda 2: 0/3 -> WARNING 
+Azienda 3: 0/3 -> WARNING 
+Azienda 4: 0/3 -> WARNING 
+Azienda 5: 0/3 -> WARNING 
+Azienda 6: 0/3 -> WARNING 
+Azienda 7: 0/3 -> WARNING 
+Azienda 8: 0/3 -> WARNING 
+Azienda 9: 0/3 -> WARNING 
+---------------- Inizio Test Vincolo 1 -------------------- 
+
+Errore: L'azienda 1 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 1 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 1 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 1 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 2 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 2 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 2 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 2 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 3 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 3 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 3 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 3 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 4 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 4 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 4 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 4 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 5 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 5 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 5 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 5 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 6 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 6 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 6 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 6 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 7 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 7 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 7 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 7 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 8 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 8 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 8 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 8 nel round 4 in cui ha 0 incontri
+Errore: L'azienda 9 nel round 1 in cui ha 0 incontri
+Errore: L'azienda 9 nel round 2 in cui ha 0 incontri
+Errore: L'azienda 9 nel round 3 in cui ha 0 incontri
+Errore: L'azienda 9 nel round 4 in cui ha 0 incontri
+Test Vincolo 1 - ERROR
+---------------- Inizio Test Vincolo 2 -------------------- 
+
+Test Vincolo 2 - OK
+---------------- Inizio Test Vincolo 3 -------------------- 
+
+Errore: L'azienda 2, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 3, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 3, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 4, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 4, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 4, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 5, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 5, 0 incontri ha meno di 2 incontri.
+Errore: L'azienda 5, 0 incontri ha meno di 2 incontri.
+Test Vincolo 3 - ERROR

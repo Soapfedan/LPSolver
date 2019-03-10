@@ -1,5 +1,8 @@
 package main;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lpsolve.LpSolve;
@@ -23,10 +26,25 @@ public class TestSuite {
 
 	/**
 	 * ogni azienda può avere al massimo un incontro per round
+	 * @throws IOException 
 	 */
 	
 	
-	public boolean checkCompanyOneMatchPerRound(double[] vars){
+	public boolean checkCompanyOneMatchPerRound(double[] vars) throws IOException{
+		
+		FileWriter wr = null;
+		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+
+			wr.write("---------------- Inizio Test Vincolo 1 -------------------- \n\n");
+			
+		    
+		}
 		
 		boolean ret = true;
 		
@@ -65,7 +83,15 @@ public class TestSuite {
 	            
 	            if(sum != 1) {
 	            	ret = false;
+	            	if(wr != null && Main.TO_PRINT_STATS == 1) {
+	            		wr.write("Errore: L'azienda " + i + " nel round "+ t + " in cui ha "+ sum + " incontri\n");
+	            	}
 	            	System.out.println("Errore: L'azienda " + i + " nel round "+ t + " in cui ha "+ sum + " incontri");
+	            }else {
+	            	if(wr != null && Main.TO_PRINT_STATS == 1) {
+	            		wr.write("OK: L'azienda " + i + " nel round "+ t + " ha "+ sum + " incontri\n");
+	            	}
+	            	System.out.println("OK: L'azienda " + i + " nel round "+ t + " ha "+ sum + " incontri");
 	            }
 
 	           
@@ -77,8 +103,21 @@ public class TestSuite {
 		
 		if(ret) {
 			System.out.println(" Test Vincolo 1 - OK");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 1 - OK\n");
+        	}
+			
 		}else {
 			System.out.println(" Test Vincolo 1 - ERROR");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 1 - ERROR\n");
+        	}
+		}
+		
+		if(wr !=null) {
+			wr.close();
 		}
 		
 		return ret;
@@ -89,9 +128,27 @@ public class TestSuite {
 	
 	/**
 	 * ogni azienda, fra tutti i round, può incontrarsi al massimo una volta con ogni azienda
+	 * @throws IOException 
 	 */
 	
-	public boolean checkCompaniesMatchAllRounds(double[] vars) {
+	public boolean checkCompaniesMatchAllRounds(double[] vars) throws IOException {
+		
+		FileWriter wr = null;
+		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+
+			wr.write("---------------- Inizio Test Vincolo 2 -------------------- \n\n");
+			
+		    
+		}
+		
+		int round = 0;
+		
 		
 		boolean ret = true;
 		
@@ -119,7 +176,8 @@ public class TestSuite {
             for (int j = 0; j < c.size(); j++) {
             	
             	//il -1 serve perché vars è un indice che va da 0 a NumVariabili -1
-            	sum += vars[c.get(j)-1];            	
+            	sum += vars[c.get(j)-1];
+            	
 			}
 
             int[] i_j_t = new int[3];
@@ -127,7 +185,15 @@ public class TestSuite {
             
             if(sum > 1) {
             	ret = false;
+            	if(wr != null && Main.TO_PRINT_STATS == 1) {
+            		wr.write("Errore: L'azienda " + i_j_t[0] + " e l'azienda "+ i_j_t[1] + " hanno più di un incontro\n");
+            	}
             	System.out.println("Errore: L'azienda " + i_j_t[0] + " e l'azienda "+ i_j_t[1] + " hanno più di un incontro");
+            }else {
+            	if(wr != null && Main.TO_PRINT_STATS == 1) {
+            		wr.write("OK: L'azienda " + i_j_t[0] + " e l'azienda "+ i_j_t[1] + " si incontrano al massimo 1 volta\n");
+            	}
+            	System.out.println("OK: L'azienda " + i_j_t[0] + " e l'azienda "+ i_j_t[1] + " si incontrano al massimo 1 volta");
             }
 
 			
@@ -135,15 +201,42 @@ public class TestSuite {
 		
 		if(ret) {
 			System.out.println(" Test Vincolo 2 - OK");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 2 - OK\n");
+        	}
+			
 		}else {
 			System.out.println(" Test Vincolo 2 - ERROR");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 2 - ERROR\n");
+        	}
+		}
+		
+		if(wr !=null) {
+			wr.close();
 		}
 		
 		return ret;
 	}
 	
 	
-	public boolean checkMinIncontri(double[] variables) {
+	public boolean checkMinIncontri(double[] variables) throws IOException {
+		
+		FileWriter wr = null;
+		
+		if(Main.TO_PRINT_STATS == 1) {
+			
+			File statsFile = new File(Main.STATS_FILE_PATH);
+			statsFile.createNewFile();
+			wr = new FileWriter (Main.STATS_FILE_PATH,true);
+			
+
+			wr.write("---------------- Inizio Test Vincolo 3 -------------------- \n\n");
+			
+		    
+		}
 		
 		boolean ret = true;
 		
@@ -191,7 +284,18 @@ public class TestSuite {
 	        
 	        if(nIncontri < this.minIncontri) {
 	        	ret = false;
-	        	System.out.println("Errore: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri ha meno di "+this.minIncontri+" incontri.");
+	        	System.out.println("Errore: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri minore di "+this.minIncontri+" incontri.");
+	        	
+	        	if(wr != null && Main.TO_PRINT_STATS == 1) {
+            		wr.write("Errore: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri minore di "+this.minIncontri+" incontri.\n");
+            	}
+	        	
+	        }else {
+        		System.out.println("OK: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri maggiore di "+this.minIncontri+" incontri.");
+	        	
+	        	if(wr != null && Main.TO_PRINT_STATS == 1) {
+            		wr.write("OK: L'azienda " + i_j_t[0] + ", "+nIncontri+" incontri maggiore di "+this.minIncontri+" incontri.\n");
+            	}
 	        }
 
 	       
@@ -199,8 +303,21 @@ public class TestSuite {
 		
 		if(ret) {
 			System.out.println(" Test Vincolo 3 - OK");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 3 - OK\n");
+        	}
+			
 		}else {
 			System.out.println(" Test Vincolo 3 - ERROR");
+			
+			if(wr != null && Main.TO_PRINT_STATS == 1) {
+        		wr.write("Test Vincolo 3 - ERROR\n");
+        	}
+		}
+		
+		if(wr !=null) {
+			wr.close();
 		}
 		
 		

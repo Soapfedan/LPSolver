@@ -1,0 +1,90 @@
+----------- Elenco Informazioni Macchina ----------------- 
+Java Version 	 	 	1.8.0_201
+Java Allocated Memory 	257425408 bytes 
+Java -Xmx 	 	 	 	3790077952 bytes 
+Os Architecture Version amd64
+Os System Name 	 	 	Windows 10
+Os System Version 	 	10.0
+ 
+ 
+Tempo impiegato per caricare le preferenze: 10 milliseconds 
+Memoria utilizzata per caricare le preferenze: 2684392 bytes 
+----------- Statistiche Programma ----------------- 
+
+Dati Dominio 
+N Aziende = 26 
+N Round = 5 
+Min Incontri = 2
+ 
+Valore Funzione Obiettivo 6312.0
+ 
+Tempo impiegato per la risoluzione del problema: 430 milliseconds 
+Memoria utilizzata per la risoluzione del problema: 5368768 bytes 
+
+
+--------- Statistiche Lista Incontri Aziende-------- 
+ 
+Azienda 1, 5 incontri, [az5,az18,az16,az23,az25] 
+Azienda 2, 5 incontri, [az3,az5,az8,az7,az9]
+Azienda 3, 5 incontri, [az2,az8,az14,az9,az24]
+Azienda 4, 5 incontri, [az12,az16,az22,az25,az23]
+Azienda 5, 5 incontri, [az1,az2,az10,az18,az8]
+Azienda 6, 5 incontri, [az16,az7,az23,az13,az22]
+Azienda 7, 5 incontri, [az11,az6,az13,az2,az21]
+Azienda 8, 5 incontri, [az14,az3,az2,az20,az5]
+Azienda 9, 5 incontri, [az15,az12,az26,az3,az2]
+Azienda 10, 5 incontri, [az25,az15,az5,az22,az17]
+Azienda 11, 5 incontri, [az7,az19,az21,az15,az20]
+Azienda 12, 5 incontri, [az4,az9,az25,az17,az14]
+Azienda 13, 5 incontri, [az18,az14,az7,az6,az15]
+Azienda 14, 5 incontri, [az8,az13,az3,az24,az12]
+Azienda 15, 5 incontri, [az9,az10,az24,az11,az13]
+Azienda 16, 5 incontri, [az6,az4,az1,az26,az18]
+Azienda 17, 5 incontri, [az21,az26,az19,az12,az10]
+Azienda 18, 5 incontri, [az13,az1,az20,az5,az16]
+Azienda 19, 5 incontri, [az24,az11,az17,az21,az26]
+Azienda 20, 5 incontri, [az23,az21,az18,az8,az11]
+Azienda 21, 5 incontri, [az17,az20,az11,az19,az7]
+Azienda 22, 5 incontri, [az26,az25,az4,az10,az6]
+Azienda 23, 5 incontri, [az20,az24,az6,az1,az4]
+Azienda 24, 5 incontri, [az19,az23,az15,az14,az3]
+Azienda 25, 5 incontri, [az10,az22,az12,az4,az1]
+Azienda 26, 5 incontri, [az22,az17,az9,az16,az19]
+
+--------- Statistiche Preferenze Aziende -------- 
+ 
+Azienda 1: 5/3 
+Azienda 2: 5/3 
+Azienda 3: 5/3 
+Azienda 4: 5/3 
+Azienda 5: 5/3 
+Azienda 6: 5/3 
+Azienda 7: 5/3 
+Azienda 8: 5/3 
+Azienda 9: 5/3 
+Azienda 10: 5/3 
+Azienda 11: 5/3 
+Azienda 12: 5/3 
+Azienda 13: 5/3 
+Azienda 14: 5/3 
+Azienda 15: 5/3 
+Azienda 16: 5/3 
+Azienda 17: 5/3 
+Azienda 18: 5/3 
+Azienda 19: 5/3 
+Azienda 20: 5/3 
+Azienda 21: 5/3 
+Azienda 22: 5/3 
+Azienda 23: 5/3 
+Azienda 24: 5/3 
+Azienda 25: 5/3 
+Azienda 26: 5/3 
+---------------- Inizio Test Vincolo 1 -------------------- 
+
+Test Vincolo 1 - OK
+---------------- Inizio Test Vincolo 2 -------------------- 
+
+Test Vincolo 2 - OK
+---------------- Inizio Test Vincolo 3 -------------------- 
+
+Test Vincolo 3 - OK

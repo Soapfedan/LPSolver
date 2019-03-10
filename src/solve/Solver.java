@@ -173,6 +173,8 @@ public class Solver {
 
 			  solv.solve();
 			  
+			  this.objRes = solv.getObjective();
+			  
 			  System.out.println("Valore Funzione obiettivo "+solv.getObjective());
 			  double[] var = solv.getPtrVariables();
 			  
