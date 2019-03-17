@@ -29,7 +29,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		
 			if(args.length >= 4) {
 				
 				try {
@@ -45,6 +44,7 @@ public class Main {
 				Main.writeObjToFile(variables);
 				
 				} catch (IOException e) {
+					e.printStackTrace();
 					System.out.println(Arrays.toString(e.getStackTrace()));
 				}
 				
@@ -474,48 +474,45 @@ public class Main {
 		
 		int[] numPreferenze = new int[N];
 		
-		for (int i = 1; i <= N; i++)
+		System.out.println("");
+		System.out.println("--------- Statistiche Preferenze Aziende --------");
+		System.out.println("");
+		
+		for (int i = 0; i < N; i++)
 	    {
 
-			System.out.println(Arrays.toString(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1]));
 			int nIncontri = 0;
-			
-	    
-	            for (int j1 = 1; j1 <= N && i > j1; j1++)
+			    
+	            for (int j1 = 0; j1 < N && i > j1; j1++)
 	            {
 	            	
-	            	
-	            	System.out.print(Main.SOLVER_SYSTEM.getObjCoefficient()[j1-1][i-1]);
-	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[j1-1][i-1] > 1) {
-	            		numPreferenze[i-1] += 1;
+	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[i][j1] > 1) {
+	            		numPreferenze[i] += 1;
 	            	}
 	            	
 
 	            }
 	    
-	            for (int j2 = i+1; j2 <= N && j2 > i; j2++)
+	            for (int j2 = i+1; j2 < N && j2 > i; j2++)
 	            {
-	            	System.out.print(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j2-1]);
-	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j2-1] > 1) {
-	            		numPreferenze[i-1] += 1;
+	            	
+	            	if(Main.SOLVER_SYSTEM.getObjCoefficient()[j2][i] > 1) {
+	            		numPreferenze[i] += 1;
 
 	            	}
 	            	
 	            	
 	            }	
 
-	        
-	      
+	      //int is = i+1;  
+	      //System.out.println("Azienda "+is+" n prefs "+numPreferenze[i]);
 	       
 	    }
 		
-		System.out.println(Arrays.toString(numPreferenze));
 		
 		
 		
-		System.out.println("");
-		System.out.println("--------- Statistiche Preferenze Aziende --------");
-		System.out.println("");
+	
 		
 		FileWriter wr = null;
 		
@@ -530,23 +527,23 @@ public class Main {
 			
 		    
 		}
-
 		
-		for (int i = 1; i <= N; i++)
+		
+		for (int i = 0; i < N; i++)
 	    {
 
 			
 			int nIncontri = 0;
 			
-	        for (int t = 1; t <= T ; t++)
+	        for (int t = 0; t < T ; t++)
 	        {
 
 	    
-	            for (int j1 = 1; j1 <= N && i > j1; j1++)
+	            for (int j1 = 0; j1 < N && i > j1; j1++)
 	            {
-	            	int absVar = Utils.getAbsoluteVar(i, j1, t,N);
+	            	int absVar = Utils.getAbsoluteVar(i+1, j1+1, t+1,N);
 	            	
-	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i-1][j1-1] > 1) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[i][j1] > 1) {
 	            		nIncontri += 1;
 
 	            	}
@@ -554,11 +551,11 @@ public class Main {
 
 	            }
 	    
-	            for (int j2 = i+1; j2 <= N && j2 > i; j2++)
+	            for (int j2 = i+1; j2 < N && j2 > i; j2++)
 	            {
-	            	int absVar = Utils.getAbsoluteVar(j2, i, t,N);
+	            	int absVar = Utils.getAbsoluteVar(j2+1, i+1, t+1,N);
 	            	
-	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2-1][i-1] > 1) {
+	            	if(variables[absVar-1] == 1.0 && Main.SOLVER_SYSTEM.getObjCoefficient()[j2][i] > 1) {
 	            		nIncontri += 1;
 
 	            	}
@@ -568,9 +565,10 @@ public class Main {
 	          
 	        }
 	        
-	        String entry = "Azienda "+i+": "+nIncontri+ "/"+N_PREFERENZE;
+	        int is = i+1;
+	        String entry = "Azienda "+is+": "+nIncontri+ "/"+numPreferenze[i];
 	        
-	        if(nIncontri < N_PREFERENZE) {
+	        if(nIncontri < numPreferenze[i]) {
 	        	entry += " -> WARNING";
 	        }
 	        

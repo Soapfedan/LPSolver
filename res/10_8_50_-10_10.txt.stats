@@ -7,7 +7,7 @@ Os System Name 	 	 	Windows 10
 Os System Version 	 	10.0
  
  
-Tempo impiegato per caricare le preferenze: 4 milliseconds 
+Tempo impiegato per caricare le preferenze: 3 milliseconds 
 Memoria utilizzata per caricare le preferenze: 2684928 MB 
 ----------- Statistiche Programma ----------------- 
 
@@ -16,37 +16,37 @@ N Aziende = 10
 N Round = 3 
 Min Incontri = 0
  
-Valore Funzione Obiettivo 1499.999999999999
+Valore Funzione Obiettivo 1500.0
  
-Tempo impiegato per la risoluzione del problema: 16 milliseconds 
+Tempo impiegato per la risoluzione del problema: 18 milliseconds 
 Memoria utilizzata per la risoluzione del problema: 2684928 MB 
 
 
 --------- Statistiche Lista Incontri Aziende-------- 
  
-Azienda 1, 3 incontri, [az4,az7,az6] 
-Azienda 2, 3 incontri, [az7,az3,az9]
-Azienda 3, 3 incontri, [az8,az2,az7]
-Azienda 4, 3 incontri, [az1,az5,az10]
-Azienda 5, 3 incontri, [az9,az4,az8]
-Azienda 6, 3 incontri, [az10,az8,az1]
-Azienda 7, 3 incontri, [az2,az1,az3]
-Azienda 8, 3 incontri, [az3,az6,az5]
-Azienda 9, 3 incontri, [az5,az10,az2]
-Azienda 10, 3 incontri, [az6,az9,az4]
+Azienda 1, 3 incontri, [az4,az3,az8] 
+Azienda 2, 3 incontri, [az7,az6,az9]
+Azienda 3, 3 incontri, [az6,az1,az5]
+Azienda 4, 3 incontri, [az1,az8,az6]
+Azienda 5, 3 incontri, [az9,az10,az3]
+Azienda 6, 3 incontri, [az3,az2,az4]
+Azienda 7, 3 incontri, [az2,az9,az10]
+Azienda 8, 3 incontri, [az10,az4,az1]
+Azienda 9, 3 incontri, [az5,az7,az2]
+Azienda 10, 3 incontri, [az8,az5,az7]
 
 --------- Statistiche Preferenze Aziende -------- 
  
-Azienda 1: 3/3 
-Azienda 2: 3/3 
-Azienda 3: 3/3 
-Azienda 4: 3/3 
-Azienda 5: 3/3 
-Azienda 6: 3/3 
-Azienda 7: 3/3 
-Azienda 8: 3/3 
-Azienda 9: 3/3 
-Azienda 10: 3/3 
+Azienda 1: 3/9 -> WARNING 
+Azienda 2: 3/9 -> WARNING 
+Azienda 3: 3/7 -> WARNING 
+Azienda 4: 3/8 -> WARNING 
+Azienda 5: 3/8 -> WARNING 
+Azienda 6: 3/8 -> WARNING 
+Azienda 7: 3/7 -> WARNING 
+Azienda 8: 3/6 -> WARNING 
+Azienda 9: 3/7 -> WARNING 
+Azienda 10: 3/7 -> WARNING 
 ---------------- Inizio Test Vincolo 1 -------------------- 
 
 OK: L'azienda 1 nel round 1 ha 1 incontri
